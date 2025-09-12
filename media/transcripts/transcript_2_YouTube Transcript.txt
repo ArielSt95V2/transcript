@@ -1,0 +1,189 @@
+Title: YouTube Transcript
+Source URL: https://youtu.be/f6xCTAk8Lww?si=QBm0nIgsqztnBSbv
+Profession: GeneralAriel
+Created: 2025-09-09 18:53:55.290506+00:00
+--------------------------------------------------
+
+Color grading is often seen as a second 
+chance and the final step in bringing  
+every shot to its full potential. and sure it 
+can be that, but you really shouldn't treat it  
+as just the last step. because the secret to 
+cinematic colors, is not in a magical plugin  
+or perfect amount of grain, actually... 
+it starts before you even hit record.
+allright, remind me why am I here again?! 
+to learn color grading? just like you asked!  
+pretty sure I just asked if you have any cool 
+LUT. yeah but this is way better! come on,  
+just go inside! do I have 
+to?! yeah... you kind of do.
+um... What is this place?! it's 
+basically just a room... a very  
+dusty room. but that.. doesn't really 
+matter. you see that desk in front of you?  
+yes. well, that actually matter. get a 
+bit closer. These photos, they're from  
+the movies that are widely considered to have 
+a very cinematic look! cooooool! very touching.  
+And what am I supposed to do with that?! okay, 
+if you can spot these films, name them on the  
+board, and you will discover the first secret 
+behind Hollywood's color grading! fine...
+seven!
+okay, I'm done. Great! Okay, tell me what 
+you found! that you're into printing stuff.  
+really?! that's it?! yeah, that's all 
+I got. Okay. If you take a closer look,  
+You will see that none of these films forced 
+their desired look through grading alone..  
+They crafted everything around the visual 
+style they wanted! Ff the necessary elements  
+are not already there in the frame, no 
+amount of grading is going to save it!  
+So... what can create a very 
+strong foundation for the great?!
+Okay, that was cool! Thank you! Now if you want 
+to truly understand, go check that laptop on your  
+left. You can find countless example of this, 
+but there's a movie called "Black Phone" which  
+makes the connection between color grading and set 
+design so undeniably clear. The filmmakers aimed  
+for a warm retro look to match the 80s vibes, 
+but in almost every single shot of this film,  
+is a hint of blue! thoughtfully placed in both 
+wardrobe and props to create a lot more contrast,  
+without breaking the look! so even after a 
+very warm grade, the image feels beautifully  
+balanced! so basically they made the "orange 
+and teal" look by putting blue stuff in the  
+frame? exactly! It wasn't a last minute 
+decision or forced it to the grade. it  
+was already there. Interesting... wait, that 
+was it?! there's another board... behind you.
+is this another puzzle? yes, sorry. Okay what 
+am I looking at? - you tell me! What do you  
+mean? Besides set and custom design.. there's 
+one more thing you can use before grading that  
+will make everything fall into place. And just 
+like before it all comes down to contrast!
+I think I got it!
+it's the blue pins on the orange papers,  
+and the orange pins on blue papers. That was 
+we-don't-have-enough-time-to-explain-the-how fast!
+Okay, enlighten me. With pleasure! open the 
+last folder. you will see hundreds of images  
+where mixing warm and cool color temperatures, 
+had a huge impact on the look and the contrast!  
+the effect really pops when your two lights 
+are around 2,000 to 3,000 Kelvin apart. like  
+2900 and 6,500? yes, this may be considered a 
+lighting trick but it has a noticeable impact  
+in the color grading process! it can work in both 
+ways. yeah, but you mean for every single scene?  
+the lights needs to be motivated by something, but 
+no not for every scene. check the second laptop on  
+your right. there are plenty of great looking 
+shots that use just one-tone. I mean it still  
+depends on your story, location and lighting 
+motivations! but pulling off a good one tone  
+image is a lot harder. and when you watch them 
+side by side you probably get what I'm saying.  
+I mean... you're not wrong! taking care of 
+these things will make your grading process  
+easier and more powerful. Now, ready to start 
+the actual grading?! thought you would never ask.
+how about we do this my way?! well I 
+was thinking that maybe... - Perfect!!
+first step, converting slog3 or any other Log 
+format to Davinci Wide Gamut and then to REC709,  
+so that will be our first and last node. Ask me 
+why? why? to get the maximum dynamic range! then  
+I'll create four more nodes in between starting 
+with contrast and... exposure? exactly! I usually  
+start with just Gamma and Gain, but still 
+keeping an eye on the vectorscope and I try  
+to keep the shadows above zero and highlights 
+under 900, and sometimes lowering the contrast  
+and Mid-Details will create a more cinematic 
+look! especially with mirrorless cameras..  
+the next node is White Balance and 
+The Look. - the most important one.
+Right... and sometimes... I try to steal from 
+the ones I love! I've noticed that I like the  
+films that have a bluish or desaturated look, and 
+most Sony cameras have lots of unnecessary reds  
+in the shadows, so I reduce the reds using Lift, 
+Gamma and Gain, but it's better to do most of the  
+work with just Gamma and Gain. Then I'll create 
+a parallel node to bring back a bit of yellows  
+and reds to the midtonones. Don't you want to 
+add something? I do... There's a plugin called  
+Dehancer... That's always been my final touch. 
+Okay, where should I get it? You can download  
+it from their website, it's a really accurate 
+Film Emulation plugin with lots of film stocks,  
+but it's not free... yeah i'm trying to 
+buy... 500 bucks??? Bold of you to think  
+I would actually buy that. Well, you can use 
+mine if you want! Yeah! Let's do that! okay,  
+drag the Dehancer to the next node after 
+white balance and change the source to DWR  
+intermediates, and reduce the gain to 0.600, 
+then choose a film stock. okay which one? any  
+one you like! I use Kodak Aerocolor for most 
+of the night scenes and Kodak Vision3 for  
+most daytime scenes then I would enable the 
+grain, halation and bloom... and it's done!
+so all these steps were necessary, huh? none of 
+them are necessary.. but planning and putting  
+time and effort into your work always makes 
+a difference! for example everything you went  
+through today, was planned 30 days ago. What?! 
+Everything started when I was trying to make a  
+color grading video without just recording my 
+screen. so I headed over to Milanote the best  
+place for planning and organizing and tried to 
+gather all of my ideas in one place the first part  
+was writing the script after finishing the first 
+draft I transferred everything to Milanotes adding  
+some visual references and organized it into five 
+chapters next step set design i put together a  
+mood board in Milanote with all the things I 
+thought would suit the place like a library  
+with vintage books and bunch of brown furnitures 
+this story is supposed to have a few puzzles so  
+I wrote down everything that came to my mind in 
+Milanote and then choose the one with a better  
+chance of actually working it's always better to 
+have all of your ideas in one place then it was  
+time to make a shot list so I grabbed the shot 
+list template from Milanote and started writing  
+the shot types and frame sizes for each scene and 
+pair them with at least two visual references for  
+each one they can work both as inspiration and as 
+a backup plan the next step was making a gear list  
+and fortunately Milanote has a template for that 
+too i chose the DZOFilm Arles primes and paired  
+them with Sony's ZV-E1 these are definitely the 
+best lenses I ever used now the only remaining  
+part was music i dragged all the songs that I 
+like into the soundtrack board and try to match  
+each one to a specific moment in the video then 
+after four weeks of planning and huge help of
+Milanote everything was ready to roll Milanote 
+is available for free with no time limits. so  
+you can sign up for free using the link in 
+the description. so yeah.. like I was saying,  
+all the time you put in our work really pays 
+off at the end. I mean... everything you  
+did today was worth it, right? ...right? 
+yeah yeah totally! hahaaa I knew it! So,  
+ready to discover a new secret?! Oh 
+I'm sure you're ready, go check the  
+books on the library on your left and you will 
+discover the biggest trick about color grad...
+YOU'RE WELCOME.
+you hang with us boom start it
+up turn it up roll the drop hang 
+with us start it up i go on and on

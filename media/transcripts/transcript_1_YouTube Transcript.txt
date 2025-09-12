@@ -1,0 +1,137 @@
+Title: YouTube Transcript
+Source URL: https://youtu.be/RuvtgvJ2UXU?si=JW3Dc1Goi0pm1pd1
+Profession: GeneralAriel
+Created: 2025-09-09 18:35:24.794082+00:00
+--------------------------------------------------
+
+hey all in this video we will see how we
+can use raw.io or diagrams with vs code
+we all might have used draw.io currently
+known as diagrams in order to create
+various kinds of close Sim line diagrams
+topology diagrams Etc
+raw dot IO or diagrams is available on
+browser as well as a desktop app
+but today in this video we will see how
+we can use it with vs code
+so let's jump onto our vs code editor
+the first thing that we need to do is
+install an extension that is raw.io
+integration so we go to extensions
+and we search here for raw.io
+integration
+so install this extension locally
+once you have installed this extension
+you can go back to your code editor and
+create a file with extension either as
+Dio or dot draw IO
+so what I will do is I will create
+something like let's say architecture
+dot d i o
+instead of Dio you could also use
+raw IO as an extension
+so once you create that file you will
+notice
+that is a
+draw.io canvas that is embedded
+here you can use it to create different
+kinds of diagrams
+you could either create flow diagrams or
+you could click on Advanced or click on
+more shape in order to create different
+kinds of diagrams that are available
+here we will keep it very sweet and
+simple
+I will go and create let's say
+a rectangle with something known as
+component one
+and let's say I create another component
+that is component 2.
+all right and I connect this with an
+arrow
+in addition to this you can expand this
+and give different kinds of colors as
+your as you wish
+okay you can also add text
+let's say raw IO
+integration
+okay so you have various kinds of
+options here that you can use
+once you save this you have various
+options to either export it as an SVG
+jpeg or a PNG file
+you could do that by opening your
+command palette
+searching for raw.io and clicking on
+export to option and then selecting the
+target
+format for your
+output
+instead of exporting I will show you
+another interesting way wherein you
+could create an editable SVG so that you
+could edit it on fly and the same could
+be embedded into your documentation or
+your readme file
+Etc
+so let's try that out
+so what I will do here is I will click
+on Ctrl shift p or command shift p on
+Mac
+search draw.io and select convert to
+option
+once you select the convert to option
+select the draw i o dot SVG
+I would recommend this option as this
+has a better clarity
+when you compare it with the PNG one
+okay so I'll select
+dot draw IO dot SVG as my target
+once you do so you will notice your file
+has been renamed to dot draw IO dot SVG
+now this SVG as you can see is an
+editable one I could go and create
+various parts here
+okay and all of this is editable
+so this could be very handy if you would
+want to include this diagram
+within your documentation right or your
+readme file so let's try that out I
+could go here and create a readme.md
+okay and within this redmi.md let's
+refer to our file
+okay so I could give some kind of a
+heading here documentation
+once I save this let's open in the
+preview mode
+as you can see we do have the
+documentation or the diagram embedded
+here which is nothing but this SVG
+now what we will do is we will make some
+editable option here we'll edit this
+diagram
+okay and we will save it and you will
+notice it's reflected immediately in
+your redmi file
+isn't that interesting
+now
+the advantage of doing this is you could
+ship your diagrams along with your code
+or as part of your version control so
+that there can be team collaboration the
+team could
+create modification or upload any
+changes to it in the similar process to
+how you deal with the code
+okay so that's all I wanted to show in
+this video
+hope this was useful
+if you did like this video then please
+do subscribe to my channel and don't
+forget to press the Bell icon
+so that you stay up to date with all the
+videos that I publish
+[Music]
+I will see you in the next video until
+then
+happy learning
