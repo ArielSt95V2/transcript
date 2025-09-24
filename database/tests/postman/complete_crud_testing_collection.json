@@ -1,0 +1,1151 @@
+{
+	"info": {
+		"_postman_id": "87654321-4321-4321-4321-210987654321",
+		"name": "Complete CRUD Testing Collection",
+		"description": "Comprehensive collection to test all CRUD operations for all ModelViewSets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Topics CRUD",
+			"item": [
+				{
+					"name": "1. CREATE Topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Machine Learning\",\n    \"description\": \"Introduction to machine learning concepts and algorithms\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/topics/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. LIST Topics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/topics/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. RETRIEVE Topic",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. UPDATE Topic (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Advanced Machine Learning\",\n    \"description\": \"Advanced machine learning concepts, deep learning, and neural networks\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. PARTIAL UPDATE Topic (PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Updated description for advanced machine learning topics\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. DELETE Topic",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. RETRIEVE Topic by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_name}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_name}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. UPDATE Topic by Name (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Machine Learning Advanced\",\n    \"description\": \"Advanced machine learning concepts updated via name lookup\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_name}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_name}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. DELETE Topic by Name",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/topics/{{topic_name}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"{{topic_name}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Information Sources CRUD",
+			"item": [
+				{
+					"name": "1. CREATE Information Source",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source_type\": \"youtube\",\n    \"source_identifier\": \"dQw4w9WgXcQ\",\n    \"raw_content\": \"Never gonna give you up, never gonna let you down...\",\n    \"processed_content\": {\"keywords\": [\"music\", \"rick\", \"roll\"], \"duration\": 212}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. LIST Information Sources",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. RETRIEVE Information Source",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. UPDATE Information Source (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source_type\": \"youtube\",\n    \"source_identifier\": \"dQw4w9WgXcQ\",\n    \"raw_content\": \"Updated transcript content here...\",\n    \"processed_content\": {\"keywords\": [\"updated\", \"content\"], \"duration\": 300}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. PARTIAL UPDATE Information Source (PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"processed_content\": {\"keywords\": [\"patched\", \"update\"], \"duration\": 250}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. DELETE Information Source",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. RETRIEVE Information Source by Identifier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_identifier}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_identifier}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. UPDATE Information Source by Identifier (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source_type\": \"youtube\",\n    \"source_identifier\": \"{{info_source_identifier}}\",\n    \"raw_content\": \"Updated transcript content via identifier lookup...\",\n    \"processed_content\": {\"keywords\": [\"updated\", \"via\", \"identifier\"], \"duration\": 350}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_identifier}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_identifier}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. DELETE Information Source by Identifier",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/{{info_source_identifier}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"{{info_source_identifier}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Questions CRUD",
+			"item": [
+				{
+					"name": "1. CREATE User Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"What is machine learning and how does it work?\",\n    \"answer_text\": \"Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed.\",\n    \"feedback\": \"Great question! This covers the basics well.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. LIST User Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. RETRIEVE User Question",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. UPDATE User Question (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"What are the different types of machine learning algorithms?\",\n    \"answer_text\": \"There are three main types: supervised learning, unsupervised learning, and reinforcement learning.\",\n    \"feedback\": \"Updated with more specific information about ML types.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. PARTIAL UPDATE User Question (PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"feedback\": \"This answer has been improved with additional examples.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. DELETE User Question",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. RETRIEVE User Question by Text",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_text}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_text}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. UPDATE User Question by Text (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"What are the different types of machine learning algorithms and their applications?\",\n    \"answer_text\": \"There are three main types: supervised learning (predictions), unsupervised learning (patterns), and reinforcement learning (decision making).\",\n    \"feedback\": \"Updated via question text lookup with more comprehensive information.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_text}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_text}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. DELETE User Question by Text",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/{{user_question_text}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								"{{user_question_text}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Knowledge Nodes CRUD",
+			"item": [
+				{
+					"name": "1. CREATE Knowledge Node",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"concept_name\": \"Neural Networks\",\n    \"topic\": {{topic_id}},\n    \"content_source\": {{info_source_id}},\n    \"related_nodes\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. LIST Knowledge Nodes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. RETRIEVE Knowledge Node",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. UPDATE Knowledge Node (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"concept_name\": \"Deep Neural Networks\",\n    \"topic\": {{topic_id}},\n    \"content_source\": {{info_source_id}},\n    \"related_nodes\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. PARTIAL UPDATE Knowledge Node (PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"concept_name\": \"Advanced Neural Networks\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. DELETE Knowledge Node",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_id}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_id}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. RETRIEVE Knowledge Node by Concept Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_concept}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_concept}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. UPDATE Knowledge Node by Concept Name (PUT)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"concept_name\": \"Deep Neural Networks\",\n    \"topic\": {{topic_id}},\n    \"content_source\": {{info_source_id}},\n    \"related_nodes\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_concept}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_concept}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. DELETE Knowledge Node by Concept Name",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/knowledge-nodes/{{knowledge_node_concept}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"knowledge-nodes",
+								"{{knowledge_node_concept}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Testing",
+			"item": [
+				{
+					"name": "Invalid Topic Creation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"A\",\n    \"description\": \"Too short name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/topics/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Information Source Type",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"source_type\": \"invalid_type\",\n    \"source_identifier\": \"test123\",\n    \"raw_content\": \"Test content\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/information-sources/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Short Question Text",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"Short\",\n    \"answer_text\": \"This should fail validation\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/user-questions/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"user-questions",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Non-existent Resource",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/topics/99999/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"topics",
+								"99999",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transcript Extraction",
+			"item": [
+				{
+					"name": "Extract YouTube Transcript",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"extract-transcript",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid YouTube URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://invalid-url.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"extract-transcript",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Video URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"extract-transcript",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "topic_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "topic_name",
+			"value": "machine-learning",
+			"type": "string"
+		},
+		{
+			"key": "info_source_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "info_source_identifier",
+			"value": "dQw4w9WgXcQ",
+			"type": "string"
+		},
+		{
+			"key": "user_question_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "user_question_text",
+			"value": "what-is-machine-learning",
+			"type": "string"
+		},
+		{
+			"key": "knowledge_node_id",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "knowledge_node_concept",
+			"value": "neural-networks",
+			"type": "string"
+		}
+	]
+}

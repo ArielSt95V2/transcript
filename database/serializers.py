@@ -1,136 +1,200 @@
 # serializers.py
 # In Django REST Framework, you need serializers to convert between Python objects and JSON for your API
 
-
 from rest_framework import serializers
-from .models import Conversation, Message, MessageFeedback
+from .models import Topic, InformationSource, UserQuestion, KnowledgeNode
 
-class MessageSerializer(serializers.ModelSerializer):
+# Base serializer with common fields
+class BaseModelSerializer(serializers.ModelSerializer):
+    """Base serializer that all other serializers can inherit from"""
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    
     class Meta:
-        model = Message
-        fields = ['id', 'role', 'content', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        abstract = True
 
-class ConversationSerializer(serializers.ModelSerializer):
-    messages = MessageSerializer(many=True, read_only=True)
-    message_count = serializers.SerializerMethodField()
-
+# Topic Serializers
+class TopicListSerializer(BaseModelSerializer):
+    """Lightweight serializer for list views"""
+    knowledge_nodes_count = serializers.SerializerMethodField()
+    
     class Meta:
-        model = Conversation
-        fields = ['id', 'user_id', 'title', 'created_at', 'updated_at', 'messages',
-'message_count']
+        model = Topic
+        fields = ['id', 'name', 'description', 'knowledge_nodes_count', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_knowledge_nodes_count(self, obj):
+        return obj.knowledgenode_set.count()
 
-    def get_message_count(self, obj):
-        return obj.messages.count()
-
-class MessageFeedbackSerializer(serializers.ModelSerializer):
+class TopicDetailSerializer(BaseModelSerializer):
+    """Full serializer for detail views with related data"""
+    knowledge_nodes = serializers.SerializerMethodField()
+    
     class Meta:
-        model = MessageFeedback
-        fields = ['id', 'message', 'feedback_type', 'feedback_text', 'created_at']
-        read_only_fields = ['id', 'created_at']
+        model = Topic
+        fields = ['id', 'name', 'description', 'knowledge_nodes', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_knowledge_nodes(self, obj):
+        nodes = obj.knowledgenode_set.all()[:10]  # Limit to avoid large payloads
+        return KnowledgeNodeListSerializer(nodes, many=True, context=self.context).data
 
-# For creating new messages in conversations
-class MessageCreateSerializer(serializers.ModelSerializer):
+class TopicCreateUpdateSerializer(BaseModelSerializer):
+    """Serializer for creating/updating topics"""
     class Meta:
-        model = Message
-        fields = ['conversation', 'role', 'content']
+        model = Topic
+        fields = ['name', 'description']
+    
+    def validate_name(self, value):
+        if len(value.strip()) < 2:
+            raise serializers.ValidationError("Topic name must be at least 2 characters long")
+        return value.strip()
 
-
-
-from .models import Profession, ContentSource, ContentMetadata
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import exceptions
-import os
-
-class ContentMetadataSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContentMetadata
-        fields = ['id', 'metadata_key', 'metadata_value', 'created_at']
-        read_only_fields = ['id', 'created_at']
-
-class ContentSourceSerializer(serializers.ModelSerializer):
-    metadata = ContentMetadataSerializer(many=True, read_only=True)
+# InformationSource Serializers
+class InformationSourceListSerializer(BaseModelSerializer):
+    """Lightweight serializer for list views"""
     source_type_display = serializers.CharField(source='get_source_type_display', read_only=True)
-    # TRACE: This field will be computed by get_content_preview() method below
-    content_preview = serializers.SerializerMethodField()
-
+    knowledge_nodes_count = serializers.SerializerMethodField()
+    
     class Meta:
-        model = ContentSource
-        fields = [
-            'id', 'profession', 'source_type', 'source_type_display',
-            'title', 'content', 'content_preview', 'source_url',  # TRACE: content_preview included in API response
-            'created_at', 'updated_at', 'metadata'
-        ]
+        model = InformationSource
+        fields = ['id', 'source_type', 'source_type_display', 'source_identifier', 
+                 'knowledge_nodes_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_knowledge_nodes_count(self, obj):
+        return obj.knowledgenode_set.count()
+
+class InformationSourceDetailSerializer(BaseModelSerializer):
+    """Full serializer for detail views"""
+    source_type_display = serializers.CharField(source='get_source_type_display', read_only=True)
+    knowledge_nodes = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = InformationSource
+        fields = ['id', 'source_type', 'source_type_display', 'source_identifier', 
+                 'raw_content', 'processed_content', 'knowledge_nodes', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_knowledge_nodes(self, obj):
+        nodes = obj.knowledgenode_set.all()[:20]  # Limit to avoid large payloads
+        return KnowledgeNodeListSerializer(nodes, many=True, context=self.context).data
+
+class InformationSourceCreateUpdateSerializer(BaseModelSerializer):
+    """Serializer for creating/updating information sources"""
+    class Meta:
+        model = InformationSource
+        fields = ['source_type', 'source_identifier', 'raw_content', 'processed_content']
+    
+    def validate_source_identifier(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Source identifier cannot be empty")
+        return value.strip()
+    
+    def validate_source_type(self, value):
+        valid_types = [choice[0] for choice in InformationSource.SOURCE_TYPES]
+        if value not in valid_types:
+            raise serializers.ValidationError(f"Invalid source type. Must be one of: {', '.join(valid_types)}")
+        return value
+
+# UserQuestion Serializers
+class UserQuestionListSerializer(BaseModelSerializer):
+    """Lightweight serializer for list views"""
+    has_answer = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = UserQuestion
+        fields = ['id', 'question_text', 'has_answer', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_has_answer(self, obj):
+        return bool(obj.answer_text)
+
+class UserQuestionDetailSerializer(BaseModelSerializer):
+    """Full serializer for detail views"""
+    class Meta:
+        model = UserQuestion
+        fields = ['id', 'question_text', 'answer_text', 'feedback', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
 
-    def get_content_preview(self, obj):
-        """
-        TRACE: This method is called by DRF when serializing ContentSource objects
-        - obj = ContentSource instance (e.g., with full transcript text)
-        - Returns: First 200 chars + "..." if longer, or full content if shorter
-        - Used in: API response as 'content_preview' field
-        - Displayed in: UI success view as result.content_preview
-        """
-        return obj.content[:200] + "..." if len(obj.content) > 200 else obj.content
-
-
-
-
-
-
-class ContentSourceCreateSerializer(serializers.ModelSerializer):
-    metadata = serializers.DictField(child=serializers.CharField(), write_only=True, required=False)
-
+class UserQuestionCreateUpdateSerializer(BaseModelSerializer):
+    """Serializer for creating/updating user questions"""
     class Meta:
-        model = ContentSource
-        fields = ['profession', 'source_type', 'title', 'content', 'source_url', 'metadata']
+        model = UserQuestion
+        fields = ['question_text', 'answer_text', 'feedback']
+    
+    def validate_question_text(self, value):
+        if len(value.strip()) < 10:
+            raise serializers.ValidationError("Question must be at least 10 characters long")
+        return value.strip()
 
-    def create(self, validated_data):
-        metadata_data = validated_data.pop('metadata', {})
-        content_source = ContentSource.objects.create(**validated_data)
-
-        # Create metadata entries
-        for key, value in metadata_data.items():
-            ContentMetadata.objects.create(
-                content_source=content_source,
-                metadata_key=key,
-                metadata_value=value
-            )
-
-        return content_source
-
-
-
-
-
-
-class ProfessionSerializer(serializers.ModelSerializer):
-    content_count = serializers.SerializerMethodField()
-    source_type_breakdown = serializers.SerializerMethodField()
-
+# KnowledgeNode Serializers
+class KnowledgeNodeListSerializer(BaseModelSerializer):
+    """Lightweight serializer for list views"""
+    topic_name = serializers.CharField(source='topic.name', read_only=True)
+    content_source_type = serializers.CharField(source='content_source.source_type', read_only=True)
+    related_nodes_count = serializers.SerializerMethodField()
+    
     class Meta:
-        model = Profession
-        fields = ['id', 'name', 'description', 'created_at', 'content_count', 'source_type_breakdown']
+        model = KnowledgeNode
+        fields = ['id', 'concept_name', 'topic_name', 'content_source_type', 
+                 'related_nodes_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_related_nodes_count(self, obj):
+        return obj.related_nodes.count()
+
+class KnowledgeNodeDetailSerializer(BaseModelSerializer):
+    """Full serializer for detail views with nested relationships"""
+    topic = TopicListSerializer(read_only=True)
+    content_source = InformationSourceListSerializer(read_only=True)
+    related_nodes = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = KnowledgeNode
+        fields = ['id', 'concept_name', 'topic', 'content_source', 'related_nodes', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_related_nodes(self, obj):
+        related = obj.related_nodes.all()[:10]  # Limit to avoid large payloads
+        return KnowledgeNodeListSerializer(related, many=True, context=self.context).data
+
+class KnowledgeNodeCreateUpdateSerializer(BaseModelSerializer):
+    """Serializer for creating/updating knowledge nodes"""
+    class Meta:
+        model = KnowledgeNode
+        fields = ['topic', 'content_source', 'concept_name', 'related_nodes']
+    
+    def validate_concept_name(self, value):
+        if len(value.strip()) < 2:
+            raise serializers.ValidationError("Concept name must be at least 2 characters long")
+        return value.strip()
+    
+    def validate(self, data):
+        # Ensure topic and content_source exist
+        if 'topic' in data and not data['topic']:
+            raise serializers.ValidationError("Topic is required")
+        if 'content_source' in data and not data['content_source']:
+            raise serializers.ValidationError("Content source is required")
+        return data
+
+# Mobile-optimized serializers (smaller payloads)
+class MobileKnowledgeNodeSerializer(BaseModelSerializer):
+    """Ultra-lightweight serializer for mobile apps"""
+    topic_name = serializers.CharField(source='topic.name', read_only=True)
+    
+    class Meta:
+        model = KnowledgeNode
+        fields = ['id', 'concept_name', 'topic_name', 'created_at']
         read_only_fields = ['id', 'created_at']
 
-    def get_content_count(self, obj):
-        return obj.content_sources.count()
-
-    def get_source_type_breakdown(self, obj):
-        from django.db.models import Count
-        return dict(
-            obj.content_sources.values('source_type').annotate(count=Count('source_type')).values_list('source_type', 'count')
-        )
-
-class ProfessionDetailSerializer(serializers.ModelSerializer):
-    content_sources = ContentSourceSerializer(many=True, read_only=True)
-    content_count = serializers.SerializerMethodField()
-
+# Search/Filter serializers
+class KnowledgeNodeSearchSerializer(BaseModelSerializer):
+    """Serializer optimized for search results"""
+    topic_name = serializers.CharField(source='topic.name', read_only=True)
+    content_source_identifier = serializers.CharField(source='content_source.source_identifier', read_only=True)
+    
     class Meta:
-        model = Profession
-        fields = ['id', 'name', 'description', 'created_at', 'content_count', 'content_sources']
-        read_only_fields = ['id', 'created_at']
+        model = KnowledgeNode
+        fields = ['id', 'concept_name', 'topic_name', 'content_source_identifier', 'created_at']
 
-    def get_content_count(self, obj):
-        return obj.content_sources.count()

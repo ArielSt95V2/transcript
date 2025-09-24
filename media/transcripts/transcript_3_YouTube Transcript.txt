@@ -1,0 +1,466 @@
+Title: YouTube Transcript
+Source URL: https://youtu.be/nHXqPG36SPs?si=YjFEDkFj9coxqRW4
+Profession: GeneralAriel
+Created: 2025-09-14 09:25:41.489150+00:00
+--------------------------------------------------
+
+hi this is Heath from vmix in this video
+you're going to meet TJ a vmix replay
+Master who's been producing high-end
+Sports broadcasts all over the US for a
+stack of use
+this is part one where he'll get you up
+and running with vmix replay and in part
+two he'll show you how he personally
+uses it to prepare and pass replay
+events and packages from his vmix
+production truck to an overarching
+production Switcher
+so let us know in the comments if you
+find these videos helpful and enjoy hi
+my name is TJ Thompson and I am the
+owner of imit media a video production
+company based on the Georgia coast we're
+in our video production trailer today
+we've helped clients like twitch and
+ESPN we're going to be looking at vmix
+Replay in the first place we're going to
+start is at vmix.com once on vmix.com
+we're going to go to the reference
+systems page we want to check out a
+system that can house our vmix replay
+instance vmix has conveniently put
+together multiple reference systems
+we're going to be looking at the Ruby
+and the diamond system
+the Ruby system is capable of bringing
+in four HD replay cameras you can see
+right down here it says 4 HD 1080p
+cameras at 100 megabits a second
+this means that this system would be
+capable of bringing in four cameras and
+outputting two let's take a look at the
+specs of this machine
+if we scroll down we'll see that the
+graphics card in this machine is an
+Nvidia GeForce RTX 3060 TI in the CPU is
+an Intel i7
+12700 KF
+these specs will change over time as
+technology develops so you can always go
+back to this page and reference the most
+up-to-date systems
+one thing you may notice when you're
+looking at this system is these specs
+seem eerily similar to gaming laptops
+can you run replay on a gaming laptop
+yes will it be supported or recommended
+by vmix no if you plan to go that route
+please do tons of testing to make sure
+that your setup works correctly in my
+experience I would suggest building out
+a PC in a portable case versus a laptop
+let's take a look at the diamond system
+now this is where we're getting into 4K
+replay up to eight channels doing 4K
+replay is only recommended up to two
+channels it's a lot of data passing
+through your machine so just know that
+if you're looking for a 4K route one to
+two inputs is about the max that you're
+going to want to try with their Diamond
+system though this is capable of
+bringing in eight 1080p cameras which is
+fantastic it's got a 3080 TI in it and
+they're recommending an Intel Core I9
+these are just two reference systems
+that vmix has rigorously tested and has
+been proven to work up to these
+specifications now you could build your
+own machine we've built two vmix
+machines in the rack case right there
+using for you server cases we've sourced
+parts from various vendors but we've
+adhered very closely to these standards
+set by vmix let's jump into vmix and
+actually set up a replay project the
+first thing we want to do inside of vmix
+is to make sure that our project
+settings are set correctly so if you go
+into the settings tab you'll notice that
+our project Master frame rate is 59.94
+with an output size of
+1920x1080. you get the best performance
+if you match your project frame rate and
+resolution to your camera frame rate and
+resolution I say camera you can bring in
+a an SRT Source a full ndi source as
+well as a SDR HDMI Source but you want
+to make sure that all of the resolutions
+and frame rates match for Optimal
+Performance
+diving back into vmix I know that I want
+my project to be 1080 5994 so that all
+looks great I'm going to click OK I've
+got my four cameras in here and I'm
+going to go down to add input
+when you click on ADD input you'll see
+the instant replay tab right below the
+stream SRT button we're going to select
+that and it's going to bring up a bunch
+of options for us to move through
+when setting up a replay project we have
+found that we get the best results if we
+have our operating system on one drive
+and our replay session on another drive
+we use solid state drives and all of our
+machines and we've encountered no
+problems I would definitely recommend
+having your replay session stored on a
+separate drive that is not tied to the
+OS so let me show you how to set that up
+in the session folder we're going to
+click browse for us it's our e Drive and
+then replay sessions we have a folder
+where we keep all of our replay sessions
+that way if we need to clean up the
+drive or delete a project we know
+exactly where it's located
+I'm going to create a new folder in this
+drive we're going to call it demo
+and we're going to click select folder
+now our replay session has been set up
+for our e-drive replay sessions demo we
+now want to go to our recording format
+we're going to make sure this matches
+our session so we want to click 1080p
+5994 and then we can select our quality
+if you notice right now the quality is
+set to HQ vmix is telling me that I will
+have 1 hour and 37 minutes of record
+time available for four cameras if I
+select HQ that's going to be at a bit
+rate of 288 megabits a second
+for this project I'm going to go to low
+quality that's going to give me almost
+five hours of record time for four
+cameras at 96 megabits a second when
+choosing your record quality
+I've really found not a huge difference
+on the transmission side I tend to go
+with the low quality and once everything
+goes through the compression of a
+YouTube stream or even the record
+quality I really don't notice a huge
+difference so for me I would rather have
+the space and the time versus the
+quality now your mileage may vary you
+may want to ISO record all these cameras
+using the replay system so you may want
+to select the SQ or HQ option that
+definitely will give you a better
+quality but just know it's going to take
+up a lot of space
+below our record time you'll see that
+there is a disk space used by session
+this will tell you the total amount of
+space being used by your replay project
+and if you want to clean things up you
+can just hit delete all so if you had a
+previous game that you recorded and you
+open up the same project again it's
+going to tell you hey this is using 100
+gigs or 200 gigs if you don't need any
+of that you can hit delete all and all
+that goes away there's also a tick box
+right underneath that that says you can
+automatically delete prior video and
+disk space is full that means if you hit
+the limit of your hard drive and it
+fills up in the middle of a game it'll
+actually start deleting the files that
+you record at first to give you more
+space it's a good way to kind of have a
+safety mechanism if you're not sure you
+have enough space to make it through a
+game of course it'd always be best to
+make sure you have enough space on your
+hard drive next is going to be our
+camera selections this machine has a
+decklink quad input card where we can
+select our camera sources I'm gonna just
+do a two camera
+demo today so I'm going to select input
+1 and input 2 on our quad card next
+we're going to choose our playback audio
+source this will allow us to choose what
+audio we want to listen to when we
+actually play out a replay event
+that can be the audio that's on a camera
+or it could be the mixed audio uh let's
+say you want to record program or if you
+just want to have the under basket net
+mic from a camera this is where you
+would set that up
+we're going to actually choose the
+follow option when you select follow
+this will allow your audio to follow
+each camera as you play it out so if you
+play a replay from camera one you'll
+hear the embedded audio from camera one
+if you played camera two as a replay
+output it's going to play the audio from
+the embedded Source on camera too
+next up we have our in and out
+transitions in our event transition
+these are a drop down tab that will give
+you all of the transitions available
+inside of vmix we're actually going to
+use a stinger input for this on our in
+transition in our out transition
+now your in transition is when you play
+a replay event to the output when you
+send it out to the world this is the
+transition it's going to use to get to
+that replay event and then once the
+replay event is finished it's going to
+use the out transition to get back into
+whatever you have located in preview so
+we're going to make that a stinger as
+this is being set up as a traditional
+Sports Broadcast our event transition
+we're going to leave at fade and I'm
+going to actually bring the time down to
+200 milliseconds this will create a fade
+in between each replay clip so if we
+play out one two three Clips there'll be
+a 200 millisecond fade in between each
+one of those clips which is perfect I
+also want to tick this box this match
+replay speed I want to make sure that's
+not ticked so don't don't tick that if
+you were to tick that it would stretch
+out your fade transition so if you were
+using the speed control to slow that
+replay clip down to 50 percent now your
+milliseconds of fade transition got that
+much longer
+um everything here looks great so we're
+going to click okay
+and just like that we've created a new
+replay session you can see that we have
+demo a in demo B right here in our
+inputs list now the first thing you may
+see is they're black we don't see any
+cameras well that's because we haven't
+hit record yet I'm going to put Channel
+a in the preview window and then I'm
+going to hit record
+and just like that we have video you can
+see that the video is Frozen we just see
+a still frame well there's a couple
+other options now that we've selected
+our and created our replay event that
+we're going to want to look at so we're
+going to hit the Cog wheel here and
+we're going to go to options
+you'll notice here that it says show
+live sources in replay A and B when in
+live mode
+I want to see my live sources in the
+replay so I'm going to select that
+button Show preview of all camera angles
+when not in live mode is our next option
+yeah I actually do want to see all of
+those when we're not in live mode and
+then the last one that was selected is
+play audio when speed is below 100
+percent
+I don't like that but you may like the
+sound of a Wow Wow
+audio when you're playing back your
+replay session but for my applications I
+don't like that so I'm actually going to
+uncheck that box so that the speed will
+there'll be no audio there'll be no
+sound if we slow a clip down and we're
+going to click OK let's watch what
+happens wow now we've got live cameras
+in our replay Channel 8 and replay
+Channel B now let's go over all of the
+replay controls and create an actual
+replay event there's two sections that
+you can find replay controls the first
+are in the smaller input window let's
+look at those first
+you'll see in the middle we have a speed
+control which is this fader bar we have
+a record button this negative 5 and
+negative 10 are Mark last five and last
+10 second replay events so if I was to
+select that button it's going to make an
+out point when I click the button in an
+endpoint five seconds earlier and the
+same for 10 seconds so it's actually
+creating an event backwards in time
+the next this little circled arrow
+inside of a play button will play our
+last event and then of course our Cog
+wheel we'll get to all of our settings
+but if you notice over here on the right
+there's a new instant replay tab let's
+click on that
+this now pops open a whole new list of
+features
+there's a pin button in the corner if we
+click that it will actually make it full
+screen now my monitors were on by
+default but yours may be off it may look
+like this you can always turn your
+replay monitors on by selecting the
+monitor button and have this nice large
+view
+there's actually even a replay
+multi-view that you can use as a
+standalone operator but we're going to
+treat this as a one-man band example and
+go over that multi-view in a later video
+for now I'm going to shrink this back
+down to the pin View
+so you can see here we have some of the
+same controls that we have in our
+smaller section we have Mark in and out
+buttons we have our negative 5 negative
+10 negative 20. we have an A and B
+channel selection buttons as well as a a
+and b link button our camera selections
+we have another record button a play
+button we even have a play of Vince
+button now uh a forward and back arrow
+those push through different events we
+have some speed controls there's a place
+to add music there's so many goodies in
+here plus this in giant list now we have
+20 of them across the top
+those are where all of your replay Clips
+are actually going to be housed so once
+we create a replay event you'll see it
+pop up right there in our event list
+number one which is selected blue
+so let's do that now let's make a replay
+event using our minus five and minus 10
+buttons so I'm going to select the minus
+five or minus 10 button once this play
+is completed it looks like he ran there
+and that's about a five second so I'm
+going to hit five seconds now and you'll
+see that it created a new replay event
+now currently I am in the live mode you
+can tell that by this red button that
+says live right here now remember we're
+looking at replay Channel a in our
+preview window so that'll give you a
+good idea of what I'm working with
+we're going to uncheck the live button
+and you'll see all of a sudden we're
+right back to seeing our recorded replay
+event you'll see that there is a play
+last replay event button and a play
+events button there's actually a little
+drop down here where you can play all or
+the selected event or each angle so this
+is where you could actually play a bunch
+of these clips if they were in here but
+we're just going to use our play last
+event so that means this one that's
+selected it's the most recent one we
+created when we hit this little play
+last button it's going to use our input
+transition
+to use a stinger to bring on our replay
+event so it's going to play that out to
+the world once it's done it plays its
+five second clip it's going to use that
+same Stinger transition to transition
+back to what's in program
+if you're not familiar with how to set
+up a stinger you can check out one of
+the videos on how to create stingers and
+how to set those up
+so let's hit our last replay event
+button and see what happens if
+everything's set up right we should be
+able to hit our button and it just works
+like magic so let's hit our button and
+boom there it goes transition it's
+playing the last replay event we had and
+we're out so it works
+but it was a little short I feel like we
+needed to stretch it out a little longer
+so we could actually pick a different
+angle or we could even change the
+duration time of this replay clip let me
+show you how to do that so if our replay
+clip selected we can see it over here in
+preview I'm actually going to go to the
+out point of this clip and I'm going to
+make it a little longer so he gets
+tackled there and I'm just going to drag
+to maybe there that looks great the end
+point or the beginning point I feel like
+was fine we're right at the hike of the
+ball I'm actually going to use this
+little white square here to create
+another camera angle so this is our
+second camera angle oh that's a tight
+shot I kind of actually like
+that one a little better so instead of
+using our camera one angle let's just
+use our camera two angle but we're going
+to uncheck this little white box meaning
+that it's only going to play our camera
+2 angle not our camera one and let's
+let's see how that one looks now that
+we've done it so we'll hit our replay
+button so that Tim kind of calling at
+the line
+goes up it gets the snap
+there's a play in the middle it gets
+tackled boom and we're out and back to
+what's in preview another way that you
+can create a replay event other than
+using the negative five negative 10
+buttons is using an in and out point now
+you can see I'm in the live mode here
+our replay Channel a is over here and
+I'm going to mark an endpoint right
+there on the hike
+and looks like he's running around the
+end
+oh he lost a shoe
+and he's down I'm going to mark an out
+point so we use the mark in and out
+Point buttons to create this replay
+event you can see here that it added our
+endpoint and our out point with the
+duration of nine seconds and all we
+would have to do now is hit our auto
+play last replay event button and it
+will play right out with our Stinger
+transition to our output so we created
+our very first replay event and it looks
+fantastic and super professional using
+the transitions that we set up and it's
+really that easy to create an event and
+get started with vmix replay
+if you have any questions or trouble
+feel free to shoot an email to support
+vmix.com and they'll be able to answer
+any questions you have about vmix so I
+hope you enjoyed the video there will be
+a part two going over more advanced
+features so be sure to check that out
+once you feel like you've got this under
+your belt
+[Music]
+thank you

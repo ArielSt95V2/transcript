@@ -1,0 +1,273 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789abc",
+		"name": "YouTube Transcript Extractor API",
+		"description": "Collection to test the YouTube transcript extraction endpoint",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Extract YouTube Transcript",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/extract-transcript/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"extract-transcript",
+						""
+					]
+				},
+				"description": "Extract transcript from a YouTube video URL"
+			},
+			"response": [
+				{
+					"name": "Success Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"extract_transcript",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"transcript\": \"Never gonna give you up, never gonna let you down...\",\n    \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\",\n    \"video_id\": \"dQw4w9WgXcQ\",\n    \"saved_id\": 1,\n    \"message\": \"Transcript extracted and saved successfully\"\n}"
+				},
+				{
+					"name": "Error Response - Missing URL",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"extract_transcript",
+								""
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"video_url is required\"\n}"
+				},
+				{
+					"name": "Error Response - Invalid URL",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://invalid-url.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"extract_transcript",
+								""
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"Invalid YouTube URL format.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Test Different URL Formats",
+			"item": [
+				{
+					"name": "Standard YouTube URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"extract_transcript",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Short YouTube URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://youtu.be/dQw4w9WgXcQ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"extract_transcript",
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "Embed YouTube URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"video_url\": \"https://www.youtube.com/embed/dQw4w9WgXcQ\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/extract-transcript/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"information-sources",
+								"extract_transcript",
+								""
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
