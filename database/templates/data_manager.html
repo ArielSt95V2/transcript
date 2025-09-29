@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Manager - Editing Knowledge Base</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section h4 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .entity-selection-container {
+            position: relative;
+        }
+        
+        .entity-selection-container select {
+            margin-bottom: 5px;
+        }
+        
+        .text-muted {
+            color: #6b7280;
+        }
+        
+        .small {
+            font-size: 0.875rem;
+        }
+        
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+        }
+        
+        .file-input {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+        
+        .file-input input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .response.success {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            color: #22543d;
+        }
+        
+        .response.error {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #742a2a;
+        }
+        
+        .response.loading {
+            background: #ebf8ff;
+            border: 1px solid #90cdf4;
+            color: #2a4365;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .relationship-map {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .entity-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .bulk-operations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .operation-card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .operation-card:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+        
+        .operation-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .entity-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗂️ Data Manager</h1>
+            <p>Comprehensive data management for your editing knowledge base</p>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard">
+            <div class="card">
+                <h3>📊 System Overview</h3>
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="domains-count">-</div>
+                        <div class="stat-label">Domains</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="subdomains-count">-</div>
+                        <div class="stat-label">SubDomains</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="phases-count">-</div>
+                        <div class="stat-label">Phases</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="concepts-count">-</div>
+                        <div class="stat-label">Concepts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="themes-count">-</div>
+                        <div class="stat-label">Themes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="techniques-count">-</div>
+                        <div class="stat-label">Techniques</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="tools-count">-</div>
+                        <div class="stat-label">Tools</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="components-count">-</div>
+                        <div class="stat-label">Components</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="references-count">-</div>
+                        <div class="stat-label">References</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="compositions-count">-</div>
+                        <div class="stat-label">Compositions</div>
+                    </div>
+                </div>
+                <button class="btn" onclick="loadDashboardData()">🔄 Refresh Data</button>
+            </div>
+
+            <div class="card">
+                <h3>🔗 Relationship Map</h3>
+                <div class="relationship-map" id="relationship-map">
+                    Click "Refresh Data" to load relationship map...
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('create')">➕ Create Data</button>
+                <button class="tab" onclick="showTab('update')">✏️ Update Data</button>
+                <button class="tab" onclick="showTab('import')">📥 Import Data</button>
+                <button class="tab" onclick="showTab('export')">📤 Export Data</button>
+                <button class="tab" onclick="showTab('bulk')">⚡ Bulk Operations</button>
+            </div>
+
+            <!-- Create Data Tab -->
+            <div id="create-tab" class="tab-content active">
+                <h4>Create New Entities</h4>
+                <div class="entity-form">
+                    <div class="form-group">
+                        <label>Entity Type:</label>
+                        <select id="entity-type" onchange="updateEntityForm()">
+                            <option value="">Select Entity Type...</option>
+                            <option value="domain">Domain</option>
+                            <option value="subdomain">SubDomain</option>
+                            <option value="phase">Phase</option>
+                            <option value="concept">Concept</option>
+                            <option value="theme">Theme</option>
+                            <option value="technique">Technique</option>
+                            <option value="tool">Tool</option>
+                            <option value="component">Component</option>
+                            <option value="reference">Reference</option>
+                        </select>
+                    </div>
+                    
+                    <div id="entity-form-fields">
+                        <p>Select an entity type to see creation form...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Data Tab -->
+            <div id="update-tab" class="tab-content">
+                <h4>Update Existing Entities</h4>
+                <div class="entity-form">
+                    <div class="form-group">
+                        <label>Entity Type:</label>
+                        <select id="update-entity-type" onchange="updateEntityFormForUpdate()">
+                            <option value="">Select Entity Type...</option>
+                            <option value="domain">Domain</option>
+                            <option value="subdomain">SubDomain</option>
+                            <option value="phase">Phase</option>
+                            <option value="concept">Concept</option>
+                            <option value="theme">Theme</option>
+                            <option value="technique">Technique</option>
+                            <option value="tool">Tool</option>
+                            <option value="component">Component</option>
+                            <option value="reference">Reference</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select Entity:</label>
+                        <div class="entity-selection-container">
+                            <select id="update-entity-id" class="form-control" onchange="loadEntityForUpdate()">
+                                <option value="">Select an entity...</option>
+                            </select>
+                            <div id="entityListInfo" class="text-muted small mt-1"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="loadEntityForUpdate()">🔍 Load Entity</button>
+                    
+                    <div id="update-entity-form-fields">
+                        <p>Select entity type and enter ID to load entity for editing...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Data Tab -->
+            <div id="import-tab" class="tab-content">
+                <h4>Import Data from External Sources</h4>
+                <div class="bulk-operations">
+                    <div class="operation-card">
+                        <div class="operation-icon">📄</div>
+                        <h5>CSV Import</h5>
+                        <p>Import entities from CSV files</p>
+                        <div class="form-group">
+                            <label>Entity Type:</label>
+                            <select id="csv-entity-type">
+                                <option value="domain">Domain</option>
+                                <option value="subdomain">SubDomain</option>
+                                <option value="phase">Phase</option>
+                                <option value="concept">Concept</option>
+                                <option value="theme">Theme</option>
+                                <option value="technique">Technique</option>
+                                <option value="tool">Tool</option>
+                                <option value="component">Component</option>
+                                <option value="reference">Reference</option>
+                            </select>
+                        </div>
+                        <div class="file-input">
+                            <input type="file" id="csv-file" accept=".csv">
+                            <span>📁 Choose CSV File</span>
+                        </div>
+                        <button class="btn btn-success" onclick="importCSV()">Import CSV</button>
+                    </div>
+
+                    <div class="operation-card">
+                        <div class="operation-icon">🎥</div>
+                        <h5>YouTube Import</h5>
+                        <p>Import references from YouTube videos</p>
+                        <div class="form-group">
+                            <label>YouTube URL:</label>
+                            <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+                        <div class="form-group">
+                            <label>SubDomain (Optional):</label>
+                            <select id="youtube-subdomain">
+                                <option value="">Select SubDomain...</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="importYouTube()">Import YouTube</button>
+                    </div>
+
+                    <div class="operation-card">
+                        <div class="operation-icon">📋</div>
+                        <h5>JSON Import</h5>
+                        <p>Import entities from JSON data</p>
+                        <div class="form-group">
+                            <label>Entity Type:</label>
+                            <select id="json-entity-type">
+                                <option value="domain">Domain</option>
+                                <option value="subdomain">SubDomain</option>
+                                <option value="phase">Phase</option>
+                                <option value="concept">Concept</option>
+                                <option value="theme">Theme</option>
+                                <option value="technique">Technique</option>
+                                <option value="tool">Tool</option>
+                                <option value="component">Component</option>
+                                <option value="reference">Reference</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>JSON Data:</label>
+                            <textarea id="json-data" placeholder='[{"name": "Example", "description": "..."}]'></textarea>
+                        </div>
+                        <button class="btn btn-success" onclick="importJSON()">Import JSON</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Data Tab -->
+            <div id="export-tab" class="tab-content">
+                <h4>Export Data</h4>
+                <div class="bulk-operations">
+                    <div class="operation-card">
+                        <div class="operation-icon">📄</div>
+                        <h5>CSV Export</h5>
+                        <p>Export data as CSV files</p>
+                        <div class="form-group">
+                            <label>Entity Type:</label>
+                            <select id="export-entity-type">
+                                <option value="">All Entities</option>
+                                <option value="domain">Domain</option>
+                                <option value="subdomain">SubDomain</option>
+                                <option value="phase">Phase</option>
+                                <option value="concept">Concept</option>
+                                <option value="theme">Theme</option>
+                                <option value="technique">Technique</option>
+                                <option value="tool">Tool</option>
+                                <option value="component">Component</option>
+                                <option value="reference">Reference</option>
+                                <option value="composition">Composition</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary" onclick="exportData('csv')">Export CSV</button>
+                    </div>
+
+                    <div class="operation-card">
+                        <div class="operation-icon">📋</div>
+                        <h5>JSON Export</h5>
+                        <p>Export data as JSON</p>
+                        <div class="form-group">
+                            <label>Entity Type:</label>
+                            <select id="export-json-entity-type">
+                                <option value="">All Entities</option>
+                                <option value="domain">Domain</option>
+                                <option value="subdomain">SubDomain</option>
+                                <option value="phase">Phase</option>
+                                <option value="concept">Concept</option>
+                                <option value="theme">Theme</option>
+                                <option value="technique">Technique</option>
+                                <option value="tool">Tool</option>
+                                <option value="component">Component</option>
+                                <option value="reference">Reference</option>
+                                <option value="composition">Composition</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary" onclick="exportData('json')">Export JSON</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bulk Operations Tab -->
+            <div id="bulk-tab" class="tab-content">
+                <h4>Bulk Operations</h4>
+                <div class="bulk-operations">
+                    <div class="operation-card">
+                        <div class="operation-icon">⚡</div>
+                        <h5>Bulk Create</h5>
+                        <p>Create multiple entities at once</p>
+                        <div class="form-group">
+                            <label>Entity Type:</label>
+                            <select id="bulk-entity-type">
+                                <option value="domain">Domain</option>
+                                <option value="subdomain">SubDomain</option>
+                                <option value="phase">Phase</option>
+                                <option value="concept">Concept</option>
+                                <option value="theme">Theme</option>
+                                <option value="technique">Technique</option>
+                                <option value="tool">Tool</option>
+                                <option value="component">Component</option>
+                                <option value="reference">Reference</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Entities Data (JSON):</label>
+                            <textarea id="bulk-data" placeholder='[{"name": "Entity 1", "description": "..."}, {"name": "Entity 2", "description": "..."}]'></textarea>
+                        </div>
+                        <button class="btn btn-success" onclick="bulkCreate()">Bulk Create</button>
+                    </div>
+
+                    <div class="operation-card">
+                        <div class="operation-icon">🧹</div>
+                        <h5>Data Cleanup</h5>
+                        <p>Clean up orphaned or invalid data</p>
+                        <button class="btn btn-danger" onclick="cleanupData()">Cleanup Data</button>
+                    </div>
+
+                    <div class="operation-card">
+                        <div class="operation-icon">🔄</div>
+                        <h5>Sync Relationships</h5>
+                        <p>Validate and fix entity relationships</p>
+                        <button class="btn btn-secondary" onclick="syncRelationships()">Sync Relationships</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response Display -->
+        <div id="response" class="response hidden"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api'; // Adjust this to your Django server URL
+        let dashboardData = {};
+
+        // Tab Management
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Dashboard Functions
+        async function loadDashboardData() {
+            showResponse('loading', 'Loading dashboard data...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    dashboardData = data;
+                    updateStats(data.counts);
+                    updateRelationshipMap(data.relationship_map);
+                    showResponse('success', `✅ Dashboard loaded successfully!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(data.error || 'Failed to load dashboard data');
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error loading dashboard: ${error.message}`);
+            }
+        }
+
+        function updateStats(counts) {
+            // Map the counts keys to the correct element IDs
+            const keyMapping = {
+                'domains': 'domains-count',
+                'subdomains': 'subdomains-count', 
+                'phases': 'phases-count',
+                'concepts': 'concepts-count',
+                'themes': 'themes-count',
+                'techniques': 'techniques-count',
+                'tools': 'tools-count',
+                'components': 'components-count',
+                'references': 'references-count',
+                'compositions': 'compositions-count'
+            };
+            
+            Object.keys(counts).forEach(key => {
+                const elementId = keyMapping[key];
+                if (elementId) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = counts[key];
+                    }
+                }
+            });
+        }
+
+        function updateRelationshipMap(relationshipMap) {
+            const mapElement = document.getElementById('relationship-map');
+            let html = '';
+            
+            relationshipMap.forEach(domain => {
+                html += `<div style="margin-left: 0px;"><strong>${domain.name}</strong></div>`;
+                domain.subdomains.forEach(subdomain => {
+                    html += `<div style="margin-left: 20px;">└─ ${subdomain.name}</div>`;
+                    subdomain.phases.forEach(phase => {
+                        html += `<div style="margin-left: 40px;">└─ ${phase.name}</div>`;
+                        phase.concepts.forEach(concept => {
+                            html += `<div style="margin-left: 60px;">└─ ${concept.name}</div>`;
+                            concept.themes.forEach(theme => {
+                                html += `<div style="margin-left: 80px;">└─ ${theme.name}</div>`;
+                            });
+                        });
+                    });
+                });
+            });
+            
+            mapElement.innerHTML = html || 'No relationship data available';
+        }
+
+        // Entity Creation Functions
+        function updateEntityForm() {
+            const entityType = document.getElementById('entity-type').value;
+            const formFields = document.getElementById('entity-form-fields');
+            
+            if (!entityType) {
+                formFields.innerHTML = '<p>Select an entity type to see creation form...</p>';
+                return;
+            }
+            
+            let html = `
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="entity-name" placeholder="Enter ${entityType} name">
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="entity-description" placeholder="Enter ${entityType} description"></textarea>
+                </div>
+            `;
+            
+            // Add specific fields based on entity type
+            if (entityType === 'subdomain') {
+                html += `
+                    <div class="form-group">
+                        <label>Domain:</label>
+                        <select id="entity-domain">
+                            <option value="">Select Domain...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'phase') {
+                html += `
+                    <div class="form-group">
+                        <label>SubDomain:</label>
+                        <select id="entity-subdomain">
+                            <option value="">Select SubDomain...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'concept') {
+                html += `
+                    <div class="form-group">
+                        <label>Phase:</label>
+                        <select id="entity-phase">
+                            <option value="">Select Phase...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'theme') {
+                html += `
+                    <div class="form-group">
+                        <label>Concept:</label>
+                        <select id="entity-concept">
+                            <option value="">Select Concept...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'technique') {
+                html += `
+                    <div class="form-group">
+                        <label>Phase:</label>
+                        <select id="entity-technique-phase">
+                            <option value="">Select Phase...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category:</label>
+                        <select id="entity-category">
+                            <option value="rhythm_timing">Rhythm & Timing</option>
+                            <option value="transitions">Transitions</option>
+                            <option value="sound">Sound</option>
+                            <option value="emotion_psychology">Emotion/Psychology</option>
+                            <option value="visual_composition">Visual Composition</option>
+                            <option value="style_creativity">Style/Creativity</option>
+                            <option value="workflow">Workflow</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Outcome:</label>
+                        <textarea id="entity-outcome" placeholder="What does this technique achieve?"></textarea>
+                    </div>
+                `;
+            } else if (entityType === 'tool') {
+                html += `
+                    <div class="form-group">
+                        <label>Tool Type:</label>
+                        <select id="entity-tool-type">
+                            <option value="keyboard">Keyboard Shortcut</option>
+                            <option value="mouse">Mouse Tool</option>
+                            <option value="software_feature">Software Feature</option>
+                            <option value="plugin">Plugin/Extension</option>
+                            <option value="hardware">Hardware Tool</option>
+                            <option value="command">Command/Tool</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Software Platform:</label>
+                        <select id="entity-software-platform">
+                            <option value="premiere">Adobe Premiere Pro</option>
+                            <option value="davinci">DaVinci Resolve</option>
+                            <option value="audition">Adobe Audition</option>
+                            <option value="after_effects">After Effects</option>
+                            <option value="universal">Universal</option>
+                            <option value="multiple">Multiple Platforms</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Keyboard Shortcut:</label>
+                        <input type="text" id="entity-keyboard-shortcut" placeholder="e.g., Ctrl+C">
+                    </div>
+                `;
+            } else if (entityType === 'component') {
+                html += `
+                    <div class="form-group">
+                        <label>Component Type:</label>
+                        <select id="entity-component-type">
+                            <option value="audio">Audio</option>
+                            <option value="visual">Visual</option>
+                            <option value="graphics">Graphics</option>
+                            <option value="text">Text/Typography</option>
+                            <option value="effect">Effect</option>
+                            <option value="transition">Transition</option>
+                            <option value="overlay">Overlay</option>
+                            <option value="configuration">Configuration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>File Format:</label>
+                        <input type="text" id="entity-file-format" placeholder="e.g., MP3, MP4">
+                    </div>
+                `;
+            } else if (entityType === 'reference') {
+                html += `
+                    <div class="form-group">
+                        <label>Reference Type:</label>
+                        <select id="entity-reference-type">
+                            <option value="youtube">YouTube Link</option>
+                            <option value="file_path">File Path</option>
+                            <option value="text_segment">Text Segment</option>
+                            <option value="image">Image</option>
+                            <option value="audio">Audio Clip</option>
+                            <option value="video_clip">Video Clip</option>
+                            <option value="tutorial">Tutorial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Content URL:</label>
+                        <input type="url" id="entity-content-url" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>File Path:</label>
+                        <input type="text" id="entity-file-path" placeholder="/path/to/file">
+                    </div>
+                    <div class="form-group">
+                        <label>Quality Rating (1-5):</label>
+                        <select id="entity-quality-rating">
+                            <option value="">Select Rating...</option>
+                            <option value="1">1 - Poor</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Excellent</option>
+                        </select>
+                    </div>
+                `;
+            }
+            
+            html += `<button class="btn btn-success" onclick="createEntity()">Create ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}</button>`;
+            
+            formFields.innerHTML = html;
+            
+            // Populate dropdowns if we have dashboard data
+            if (dashboardData.relationship_map) {
+                populateDropdowns();
+            }
+        }
+
+        function populateDropdowns() {
+            // This would populate the dropdowns based on the relationship map
+            // Implementation would depend on the specific dropdown being populated
+        }
+
+        async function createEntity() {
+            const entityType = document.getElementById('entity-type').value;
+            const name = document.getElementById('entity-name').value;
+            const description = document.getElementById('entity-description').value;
+            
+            if (!entityType || !name || !description) {
+                showResponse('error', '❌ Please fill in all required fields');
+                return;
+            }
+            
+            const entityData = {
+                name: name,
+                description: description
+            };
+            
+            // Add specific fields based on entity type
+            if (entityType === 'subdomain') {
+                const domainId = document.getElementById('entity-domain').value;
+                if (domainId) entityData.domain_id = domainId;
+            } else if (entityType === 'phase') {
+                const subdomainId = document.getElementById('entity-subdomain').value;
+                if (subdomainId) entityData.subdomain_id = subdomainId;
+            } else if (entityType === 'concept') {
+                const phaseId = document.getElementById('entity-phase').value;
+                if (phaseId) entityData.phase_id = phaseId;
+            } else if (entityType === 'theme') {
+                const conceptId = document.getElementById('entity-concept').value;
+                if (conceptId) entityData.concept_id = conceptId;
+            } else if (entityType === 'technique') {
+                const phaseId = document.getElementById('entity-technique-phase').value;
+                const category = document.getElementById('entity-category').value;
+                const outcome = document.getElementById('entity-outcome').value;
+                if (phaseId) entityData.phase_id = phaseId;
+                if (category) entityData.category = category;
+                if (outcome) entityData.outcome = outcome;
+            }
+            
+            showResponse('loading', 'Creating entity...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        entity_type: entityType,
+                        entities: [entityData]
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ Entity created successfully!\n\n${JSON.stringify(data, null, 2)}`);
+                    // Clear form
+                    document.getElementById('entity-name').value = '';
+                    document.getElementById('entity-description').value = '';
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error creating entity:\n${error.message}`);
+            }
+        }
+
+        // Import Functions
+        async function importCSV() {
+            const fileInput = document.getElementById('csv-file');
+            const entityType = document.getElementById('csv-entity-type').value;
+            
+            if (!fileInput.files[0] || !entityType) {
+                showResponse('error', '❌ Please select a CSV file and entity type');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('csv_file', fileInput.files[0]);
+            formData.append('entity_type', entityType);
+            formData.append('import_type', 'csv');
+            
+            showResponse('loading', 'Importing CSV data...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/import/`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ CSV import completed!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error importing CSV:\n${error.message}`);
+            }
+        }
+
+        async function importYouTube() {
+            const youtubeUrl = document.getElementById('youtube-url').value;
+            const subdomainId = document.getElementById('youtube-subdomain').value;
+            
+            if (!youtubeUrl) {
+                showResponse('error', '❌ Please enter a YouTube URL');
+                return;
+            }
+            
+            showResponse('loading', 'Importing YouTube data...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/import/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        import_type: 'youtube',
+                        youtube_url: youtubeUrl,
+                        subdomain_id: subdomainId || null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ YouTube import completed!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error importing YouTube:\n${error.message}`);
+            }
+        }
+
+        async function importJSON() {
+            const jsonData = document.getElementById('json-data').value;
+            const entityType = document.getElementById('json-entity-type').value;
+            
+            if (!jsonData || !entityType) {
+                showResponse('error', '❌ Please enter JSON data and select entity type');
+                return;
+            }
+            
+            showResponse('loading', 'Importing JSON data...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/import/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        import_type: 'json',
+                        json_data: jsonData,
+                        entity_type: entityType
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ JSON import completed!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error importing JSON:\n${error.message}`);
+            }
+        }
+
+        // Export Functions
+        async function exportData(format) {
+            const entityTypeSelect = format === 'csv' ? 'export-entity-type' : 'export-json-entity-type';
+            const entityType = document.getElementById(entityTypeSelect).value;
+            
+            showResponse('loading', `Exporting ${format.toUpperCase()} data...`);
+            
+            try {
+                const url = `${API_BASE}/data-manager/export/?type=${format}${entityType ? `&entity_type=${entityType}` : ''}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ Export completed!\n\n${JSON.stringify(data, null, 2)}`);
+                    
+                    // Create download link for CSV
+                    if (format === 'csv' && data.data) {
+                        const blob = new Blob([data.data], { type: 'text/csv' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${entityType || 'all_entities'}.csv`;
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    }
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error exporting data:\n${error.message}`);
+            }
+        }
+
+        // Bulk Operations
+        async function bulkCreate() {
+            const entityType = document.getElementById('bulk-entity-type').value;
+            const bulkData = document.getElementById('bulk-data').value;
+            
+            if (!entityType || !bulkData) {
+                showResponse('error', '❌ Please select entity type and enter bulk data');
+                return;
+            }
+            
+            let entitiesData;
+            try {
+                entitiesData = JSON.parse(bulkData);
+            } catch (e) {
+                showResponse('error', '❌ Invalid JSON format in bulk data');
+                return;
+            }
+            
+            showResponse('loading', 'Creating entities in bulk...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        entity_type: entityType,
+                        entities: entitiesData
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ Bulk creation completed!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error in bulk creation:\n${error.message}`);
+            }
+        }
+
+        async function cleanupData() {
+            showResponse('loading', 'Cleaning up data...');
+            
+            try {
+                // This would be a custom endpoint for data cleanup
+                showResponse('success', '✅ Data cleanup completed! (Feature not yet implemented)');
+            } catch (error) {
+                showResponse('error', `❌ Error during cleanup:\n${error.message}`);
+            }
+        }
+
+        async function syncRelationships() {
+            showResponse('loading', 'Syncing relationships...');
+            
+            try {
+                // This would be a custom endpoint for relationship sync
+                showResponse('success', '✅ Relationships synced! (Feature not yet implemented)');
+            } catch (error) {
+                showResponse('error', `❌ Error syncing relationships:\n${error.message}`);
+            }
+        }
+
+        // Update Functions
+        async function loadEntityForUpdate() {
+            const entityType = document.getElementById('update-entity-type').value;
+            const entityId = document.getElementById('update-entity-id').value;
+            
+            // Debug logging
+            console.log('loadEntityForUpdate called:', { entityType, entityId });
+            
+            if (!entityType) {
+                showResponse('error', '❌ Please select an entity type first');
+                return;
+            }
+            
+            if (!entityId || entityId === '') {
+                showResponse('error', '❌ Please select an entity from the dropdown');
+                return;
+            }
+            
+            showResponse('loading', 'Loading entity for update...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/entity/${entityType}/${entityId}/`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    populateUpdateForm(data.entity, entityType);
+                    showResponse('success', `✅ Entity loaded successfully!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(data.error || 'Failed to load entity');
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error loading entity: ${error.message}`);
+            }
+        }
+
+        function populateUpdateForm(entity, entityType) {
+            const formFields = document.getElementById('update-entity-form-fields');
+            
+            let html = `
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="update-name" value="${entity.name}" ${entityType === 'domain' ? 'readonly' : ''}>
+                    ${entityType === 'domain' ? '<small style="color: #e53e3e;">Domain name cannot be updated</small>' : ''}
+                </div>
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="update-description">${entity.description || ''}</textarea>
+                </div>
+            `;
+            
+            // Add entity-specific fields
+            if (entityType === 'domain') {
+                html += `
+                    <div class="form-group">
+                        <label>Icon:</label>
+                        <input type="text" id="update-icon" value="${entity.icon || ''}" placeholder="Icon identifier">
+                    </div>
+                    <div class="form-group">
+                        <label>Is Active:</label>
+                        <select id="update-is-active">
+                            <option value="true" ${entity.is_active ? 'selected' : ''}>Active</option>
+                            <option value="false" ${!entity.is_active ? 'selected' : ''}>Inactive</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'subdomain') {
+                html += `
+                    <div class="form-group">
+                        <label>Domain:</label>
+                        <select id="update-domain">
+                            <option value="">Select Domain...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'phase') {
+                html += `
+                    <div class="form-group">
+                        <label>SubDomain:</label>
+                        <select id="update-subdomain">
+                            <option value="">Select SubDomain...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'concept') {
+                html += `
+                    <div class="form-group">
+                        <label>Domain:</label>
+                        <select id="update-concept-domain">
+                            <option value="">Select Domain...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>SubDomain:</label>
+                        <select id="update-concept-subdomain">
+                            <option value="">Select SubDomain...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Phase:</label>
+                        <select id="update-concept-phase">
+                            <option value="">Select Phase...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'theme') {
+                html += `
+                    <div class="form-group">
+                        <label>Concept:</label>
+                        <select id="update-theme-concept">
+                            <option value="">Select Concept...</option>
+                        </select>
+                    </div>
+                `;
+            } else if (entityType === 'technique') {
+                html += `
+                    <div class="form-group">
+                        <label>Phase:</label>
+                        <select id="update-technique-phase">
+                            <option value="">Select Phase...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category:</label>
+                        <select id="update-category">
+                            <option value="rhythm_timing" ${entity.category === 'rhythm_timing' ? 'selected' : ''}>Rhythm & Timing</option>
+                            <option value="transitions" ${entity.category === 'transitions' ? 'selected' : ''}>Transitions</option>
+                            <option value="sound" ${entity.category === 'sound' ? 'selected' : ''}>Sound</option>
+                            <option value="emotion_psychology" ${entity.category === 'emotion_psychology' ? 'selected' : ''}>Emotion/Psychology</option>
+                            <option value="visual_composition" ${entity.category === 'visual_composition' ? 'selected' : ''}>Visual Composition</option>
+                            <option value="style_creativity" ${entity.category === 'style_creativity' ? 'selected' : ''}>Style/Creativity</option>
+                            <option value="workflow" ${entity.category === 'workflow' ? 'selected' : ''}>Workflow</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Outcome:</label>
+                        <textarea id="update-outcome">${entity.outcome || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Usage Frequency:</label>
+                        <input type="number" id="update-usage-frequency" value="${entity.usage_frequency || 0}" min="0">
+                    </div>
+                `;
+            } else if (entityType === 'tool') {
+                html += `
+                    <div class="form-group">
+                        <label>Tool Type:</label>
+                        <select id="update-tool-type">
+                            <option value="keyboard" ${entity.tool_type === 'keyboard' ? 'selected' : ''}>Keyboard Shortcut</option>
+                            <option value="mouse" ${entity.tool_type === 'mouse' ? 'selected' : ''}>Mouse Tool</option>
+                            <option value="software_feature" ${entity.tool_type === 'software_feature' ? 'selected' : ''}>Software Feature</option>
+                            <option value="plugin" ${entity.tool_type === 'plugin' ? 'selected' : ''}>Plugin/Extension</option>
+                            <option value="hardware" ${entity.tool_type === 'hardware' ? 'selected' : ''}>Hardware Tool</option>
+                            <option value="command" ${entity.tool_type === 'command' ? 'selected' : ''}>Command/Tool</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Software Platform:</label>
+                        <select id="update-software-platform">
+                            <option value="premiere" ${entity.software_platform === 'premiere' ? 'selected' : ''}>Adobe Premiere Pro</option>
+                            <option value="davinci" ${entity.software_platform === 'davinci' ? 'selected' : ''}>DaVinci Resolve</option>
+                            <option value="audition" ${entity.software_platform === 'audition' ? 'selected' : ''}>Adobe Audition</option>
+                            <option value="after_effects" ${entity.software_platform === 'after_effects' ? 'selected' : ''}>After Effects</option>
+                            <option value="universal" ${entity.software_platform === 'universal' ? 'selected' : ''}>Universal</option>
+                            <option value="multiple" ${entity.software_platform === 'multiple' ? 'selected' : ''}>Multiple Platforms</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Keyboard Shortcut:</label>
+                        <input type="text" id="update-keyboard-shortcut" value="${entity.keyboard_shortcut || ''}" placeholder="e.g., Ctrl+C">
+                    </div>
+                `;
+            } else if (entityType === 'component') {
+                html += `
+                    <div class="form-group">
+                        <label>Component Type:</label>
+                        <select id="update-component-type">
+                            <option value="audio" ${entity.component_type === 'audio' ? 'selected' : ''}>Audio</option>
+                            <option value="visual" ${entity.component_type === 'visual' ? 'selected' : ''}>Visual</option>
+                            <option value="graphics" ${entity.component_type === 'graphics' ? 'selected' : ''}>Graphics</option>
+                            <option value="text" ${entity.component_type === 'text' ? 'selected' : ''}>Text/Typography</option>
+                            <option value="effect" ${entity.component_type === 'effect' ? 'selected' : ''}>Effect</option>
+                            <option value="transition" ${entity.component_type === 'transition' ? 'selected' : ''}>Transition</option>
+                            <option value="overlay" ${entity.component_type === 'overlay' ? 'selected' : ''}>Overlay</option>
+                            <option value="configuration" ${entity.component_type === 'configuration' ? 'selected' : ''}>Configuration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>File Format:</label>
+                        <input type="text" id="update-file-format" value="${entity.file_format || ''}" placeholder="e.g., MP3, MP4">
+                    </div>
+                `;
+            } else if (entityType === 'reference') {
+                html += `
+                    <div class="form-group">
+                        <label>Reference Type:</label>
+                        <select id="update-reference-type">
+                            <option value="youtube" ${entity.reference_type === 'youtube' ? 'selected' : ''}>YouTube Link</option>
+                            <option value="file_path" ${entity.reference_type === 'file_path' ? 'selected' : ''}>File Path</option>
+                            <option value="text_segment" ${entity.reference_type === 'text_segment' ? 'selected' : ''}>Text Segment</option>
+                            <option value="image" ${entity.reference_type === 'image' ? 'selected' : ''}>Image</option>
+                            <option value="audio" ${entity.reference_type === 'audio' ? 'selected' : ''}>Audio Clip</option>
+                            <option value="video_clip" ${entity.reference_type === 'video_clip' ? 'selected' : ''}>Video Clip</option>
+                            <option value="tutorial" ${entity.reference_type === 'tutorial' ? 'selected' : ''}>Tutorial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Content URL:</label>
+                        <input type="url" id="update-content-url" value="${entity.content_url || ''}" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>File Path:</label>
+                        <input type="text" id="update-file-path" value="${entity.file_path || ''}" placeholder="/path/to/file">
+                    </div>
+                    <div class="form-group">
+                        <label>Quality Rating (1-5):</label>
+                        <select id="update-quality-rating">
+                            <option value="">Select Rating...</option>
+                            <option value="1" ${entity.quality_rating === 1 ? 'selected' : ''}>1 - Poor</option>
+                            <option value="2" ${entity.quality_rating === 2 ? 'selected' : ''}>2 - Fair</option>
+                            <option value="3" ${entity.quality_rating === 3 ? 'selected' : ''}>3 - Good</option>
+                            <option value="4" ${entity.quality_rating === 4 ? 'selected' : ''}>4 - Very Good</option>
+                            <option value="5" ${entity.quality_rating === 5 ? 'selected' : ''}>5 - Excellent</option>
+                        </select>
+                    </div>
+                `;
+            }
+            
+            html += `<button class="btn btn-success" onclick="updateEntity()">Update ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}</button>`;
+            
+            formFields.innerHTML = html;
+            
+            // Set current values for dropdowns
+            if (entityType === 'subdomain' && entity.domain_id) {
+                setTimeout(() => {
+                    document.getElementById('update-domain').value = entity.domain_id;
+                }, 100);
+            } else if (entityType === 'phase' && entity.subdomain_id) {
+                setTimeout(() => {
+                    document.getElementById('update-subdomain').value = entity.subdomain_id;
+                }, 100);
+            } else if (entityType === 'concept') {
+                setTimeout(() => {
+                    if (entity.domain_id) document.getElementById('update-concept-domain').value = entity.domain_id;
+                    if (entity.subdomain_id) document.getElementById('update-concept-subdomain').value = entity.subdomain_id;
+                    if (entity.phase_id) document.getElementById('update-concept-phase').value = entity.phase_id;
+                }, 100);
+            } else if (entityType === 'theme' && entity.concept_id) {
+                setTimeout(() => {
+                    document.getElementById('update-theme-concept').value = entity.concept_id;
+                }, 100);
+            } else if (entityType === 'technique' && entity.phase_id) {
+                setTimeout(() => {
+                    document.getElementById('update-technique-phase').value = entity.phase_id;
+                }, 100);
+            }
+        }
+
+        async function updateEntity() {
+            const entityType = document.getElementById('update-entity-type').value;
+            const entityId = document.getElementById('update-entity-id').value;
+            
+            if (!entityType || !entityId) {
+                showResponse('error', '❌ Please select entity type and enter entity ID');
+                return;
+            }
+            
+            const updateData = {
+                description: document.getElementById('update-description').value
+            };
+            
+            // Add entity-specific fields
+            if (entityType === 'domain') {
+                updateData.icon = document.getElementById('update-icon').value;
+                updateData.is_active = document.getElementById('update-is-active').value === 'true';
+            } else if (entityType === 'subdomain') {
+                const domainId = document.getElementById('update-domain').value;
+                if (domainId) updateData.domain_id = domainId;
+            } else if (entityType === 'phase') {
+                const subdomainId = document.getElementById('update-subdomain').value;
+                if (subdomainId) updateData.subdomain_id = subdomainId;
+            } else if (entityType === 'concept') {
+                const domainId = document.getElementById('update-concept-domain').value;
+                const subdomainId = document.getElementById('update-concept-subdomain').value;
+                const phaseId = document.getElementById('update-concept-phase').value;
+                if (domainId) updateData.domain_id = domainId;
+                if (subdomainId) updateData.subdomain_id = subdomainId;
+                if (phaseId) updateData.phase_id = phaseId;
+            } else if (entityType === 'theme') {
+                const conceptId = document.getElementById('update-theme-concept').value;
+                if (conceptId) updateData.concept_id = conceptId;
+            } else if (entityType === 'technique') {
+                const phaseId = document.getElementById('update-technique-phase').value;
+                const category = document.getElementById('update-category').value;
+                const outcome = document.getElementById('update-outcome').value;
+                const usageFrequency = document.getElementById('update-usage-frequency').value;
+                if (phaseId) updateData.phase_id = phaseId;
+                if (category) updateData.category = category;
+                if (outcome) updateData.outcome = outcome;
+                if (usageFrequency) updateData.usage_frequency = parseInt(usageFrequency);
+            } else if (entityType === 'tool') {
+                updateData.tool_type = document.getElementById('update-tool-type').value;
+                updateData.software_platform = document.getElementById('update-software-platform').value;
+                updateData.keyboard_shortcut = document.getElementById('update-keyboard-shortcut').value;
+            } else if (entityType === 'component') {
+                updateData.component_type = document.getElementById('update-component-type').value;
+                updateData.file_format = document.getElementById('update-file-format').value;
+            } else if (entityType === 'reference') {
+                updateData.reference_type = document.getElementById('update-reference-type').value;
+                updateData.content_url = document.getElementById('update-content-url').value;
+                updateData.file_path = document.getElementById('update-file-path').value;
+                const qualityRating = document.getElementById('update-quality-rating').value;
+                if (qualityRating) updateData.quality_rating = parseInt(qualityRating);
+            }
+            
+            showResponse('loading', 'Updating entity...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/data-manager/`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        entity_type: entityType,
+                        entity_id: entityId,
+                        update_data: updateData
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('success', `✅ Entity updated successfully!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                showResponse('error', `❌ Error updating entity:\n${error.message}`);
+            }
+        }
+
+        function updateEntityFormForUpdate() {
+            const entityType = document.getElementById('update-entity-type').value;
+            const entitySelect = document.getElementById('update-entity-id');
+            const entityInfo = document.getElementById('entityListInfo');
+            
+            // Clear previous options
+            entitySelect.innerHTML = '<option value="">Select an entity...</option>';
+            entityInfo.textContent = '';
+            
+            if (!entityType) {
+                return;
+            }
+            
+            // Load entities for the selected type
+            loadEntityList(entityType);
+        }
+        
+        function loadEntityList(entityType) {
+            fetch(`${API_BASE}/data-manager/entities/${entityType}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        populateEntitySelect(data.entities);
+                        updateEntityListInfo(data.count, entityType);
+                    } else {
+                        showResponse('error', `Error loading entities: ${data.error}`);
+                    }
+                })
+                .catch(error => {
+                    showResponse('error', `Failed to load entities: ${error.message}`);
+                });
+        }
+        
+        function populateEntitySelect(entities) {
+            const entitySelect = document.getElementById('update-entity-id');
+            
+            // Temporarily remove onchange handler to prevent triggering during population
+            entitySelect.removeAttribute('onchange');
+            
+            entities.forEach(entity => {
+                const option = document.createElement('option');
+                option.value = entity.id;
+                option.textContent = `${entity.name}${entity.parent ? ` (${entity.parent})` : ''}`;
+                option.setAttribute('data-name', entity.name.toLowerCase());
+                option.setAttribute('data-description', entity.description);
+                entitySelect.appendChild(option);
+            });
+            
+            // Re-add the onchange handler after population
+            entitySelect.setAttribute('onchange', 'loadEntityForUpdate()');
+        }
+        
+        function updateEntityListInfo(count, entityType) {
+            const entityInfo = document.getElementById('entityListInfo');
+            entityInfo.textContent = `Found ${count} ${entityType}${count !== 1 ? 's' : ''}`;
+        }
+        
+
+        // Utility Functions
+        function showResponse(type, message) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.className = `response ${type}`;
+            responseDiv.textContent = message;
+            responseDiv.classList.remove('hidden');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+    </script>
+</body>
+</html>

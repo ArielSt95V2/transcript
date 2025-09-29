@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composition Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        select, input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .multi-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .checkbox-item input {
+            width: auto;
+            margin-right: 8px;
+        }
+        .checkbox-item label {
+            margin: 0;
+            font-size: 13px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .hierarchy-display {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .clear-btn {
+            background-color: #dc3545;
+        }
+        .clear-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Composition Builder</h1>
+        
+        <!-- Load Data Section -->
+        <div class="section">
+            <h3>📋 Load Available Options</h3>
+            <p>Click "Load Data" to fetch all available domains, subdomains, phases, concepts, and themes.</p>
+            <button onclick="loadHierarchyData()">Load Data</button>
+            <button onclick="clearAllData()" class="clear-btn">Clear All</button>
+        </div>
+
+        <!-- Hierarchy Display -->
+        <div id="hierarchy-display" class="hierarchy-display" style="display: none;">
+            <strong>Available Hierarchy:</strong>
+            <div id="hierarchy-content"></div>
+        </div>
+
+        <!-- Composition Form -->
+        <div class="section">
+            <h3>🎯 Create New Composition</h3>
+            
+            <label>Composition Name:</label>
+            <input type="text" id="composition-name" placeholder="e.g., Action Movie Trailer">
+            
+            <label>Description:</label>
+            <textarea id="composition-description" placeholder="Describe your composition..."></textarea>
+            
+            <!-- Hierarchical Selection -->
+            <label>Domain:</label>
+            <select id="domain-select" onchange="updateSubDomains()">
+                <option value="">Select Domain...</option>
+            </select>
+            
+            <label>Sub Domain:</label>
+            <select id="subdomain-select" onchange="updatePhases()" disabled>
+                <option value="">Select Sub Domain...</option>
+            </select>
+            
+            <label>Phase:</label>
+            <select id="phase-select" onchange="updateConcepts()" disabled>
+                <option value="">Select Phase...</option>
+            </select>
+            
+            <label>Concept:</label>
+            <select id="concept-select" onchange="updateThemes()" disabled>
+                <option value="">Select Concept...</option>
+            </select>
+            
+            <label>Theme:</label>
+            <select id="theme-select" disabled>
+                <option value="">Select Theme...</option>
+            </select>
+        </div>
+
+        <!-- Multi-Selection Sections -->
+        <div class="section">
+            <h3>🛠️ Techniques</h3>
+            <div id="techniques-container" class="multi-select">
+                <p>Load data first to see available techniques...</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔧 Tools</h3>
+            <div id="tools-container" class="multi-select">
+                <p>Load data first to see available tools...</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📦 Components</h3>
+            <div id="components-container" class="multi-select">
+                <p>Load data first to see available components...</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📚 References</h3>
+            <div id="references-container" class="multi-select">
+                <p>Load data first to see available references...</p>
+            </div>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="section">
+            <button onclick="createComposition()" id="create-btn" disabled>Create Composition</button>
+            <button onclick="clearForm()" class="clear-btn">Clear Form</button>
+        </div>
+
+        <!-- Response Display -->
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        let hierarchyData = {};
+        const API_BASE = 'http://localhost:8000/api'; // Adjust this to your Django server URL
+
+        async function loadHierarchyData() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response loading';
+            responseDiv.textContent = 'Loading hierarchy data...';
+
+            try {
+                const response = await fetch(`${API_BASE}/composition-builder/`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    hierarchyData = data;
+                    populateHierarchySelects();
+                    displayHierarchy();
+                    populateMultiSelects();
+                    
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = `✅ Loaded ${data.length} domains with complete hierarchy!`;
+                } else {
+                    throw new Error(data.error || 'Failed to load data');
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        function populateHierarchySelects() {
+            // Populate domains
+            const domainSelect = document.getElementById('domain-select');
+            domainSelect.innerHTML = '<option value="">Select Domain...</option>';
+            hierarchyData.forEach(domain => {
+                const option = document.createElement('option');
+                option.value = domain.id;
+                option.textContent = domain.name;
+                domainSelect.appendChild(option);
+            });
+        }
+
+        function updateSubDomains() {
+            const domainId = document.getElementById('domain-select').value;
+            const subdomainSelect = document.getElementById('subdomain-select');
+            
+            subdomainSelect.innerHTML = '<option value="">Select Sub Domain...</option>';
+            subdomainSelect.disabled = !domainId;
+            
+            if (domainId) {
+                const domain = hierarchyData.find(d => d.id == domainId);
+                if (domain && domain.sub_domains) {
+                    domain.sub_domains.forEach(subdomain => {
+                        const option = document.createElement('option');
+                        option.value = subdomain.id;
+                        option.textContent = subdomain.name;
+                        subdomainSelect.appendChild(option);
+                    });
+                }
+            }
+            
+            // Reset dependent selects
+            updatePhases();
+        }
+
+        function updatePhases() {
+            const subdomainId = document.getElementById('subdomain-select').value;
+            const phaseSelect = document.getElementById('phase-select');
+            
+            phaseSelect.innerHTML = '<option value="">Select Phase...</option>';
+            phaseSelect.disabled = !subdomainId;
+            
+            if (subdomainId) {
+                const domainId = document.getElementById('domain-select').value;
+                const domain = hierarchyData.find(d => d.id == domainId);
+                if (domain && domain.sub_domains) {
+                    const subdomain = domain.sub_domains.find(sd => sd.id == subdomainId);
+                    if (subdomain && subdomain.phases) {
+                        subdomain.phases.forEach(phase => {
+                            const option = document.createElement('option');
+                            option.value = phase.id;
+                            option.textContent = phase.name;
+                            phaseSelect.appendChild(option);
+                        });
+                    }
+                }
+            }
+            
+            // Reset dependent selects
+            updateConcepts();
+        }
+
+        function updateConcepts() {
+            const phaseId = document.getElementById('phase-select').value;
+            const conceptSelect = document.getElementById('concept-select');
+            
+            conceptSelect.innerHTML = '<option value="">Select Concept...</option>';
+            conceptSelect.disabled = !phaseId;
+            
+            if (phaseId) {
+                const subdomainId = document.getElementById('subdomain-select').value;
+                const domainId = document.getElementById('domain-select').value;
+                const domain = hierarchyData.find(d => d.id == domainId);
+                if (domain && domain.sub_domains) {
+                    const subdomain = domain.sub_domains.find(sd => sd.id == subdomainId);
+                    if (subdomain && subdomain.phases) {
+                        const phase = subdomain.phases.find(p => p.id == phaseId);
+                        if (phase && phase.concepts) {
+                            phase.concepts.forEach(concept => {
+                                const option = document.createElement('option');
+                                option.value = concept.id;
+                                option.textContent = concept.name;
+                                conceptSelect.appendChild(option);
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Reset dependent selects
+            updateThemes();
+        }
+
+        function updateThemes() {
+            const conceptId = document.getElementById('concept-select').value;
+            const themeSelect = document.getElementById('theme-select');
+            
+            themeSelect.innerHTML = '<option value="">Select Theme...</option>';
+            themeSelect.disabled = !conceptId;
+            
+            if (conceptId) {
+                const phaseId = document.getElementById('phase-select').value;
+                const subdomainId = document.getElementById('subdomain-select').value;
+                const domainId = document.getElementById('domain-select').value;
+                const domain = hierarchyData.find(d => d.id == domainId);
+                if (domain && domain.sub_domains) {
+                    const subdomain = domain.sub_domains.find(sd => sd.id == subdomainId);
+                    if (subdomain && subdomain.phases) {
+                        const phase = subdomain.phases.find(p => p.id == phaseId);
+                        if (phase && phase.concepts) {
+                            const concept = phase.concepts.find(c => c.id == conceptId);
+                            if (concept && concept.themes) {
+                                concept.themes.forEach(theme => {
+                                    const option = document.createElement('option');
+                                    option.value = theme.id;
+                                    option.textContent = theme.name;
+                                    themeSelect.appendChild(option);
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function populateMultiSelects() {
+            // This would populate techniques, tools, components, and references
+            // For now, we'll create some sample data
+            populateTechniques();
+            populateTools();
+            populateComponents();
+            populateReferences();
+        }
+
+        function populateTechniques() {
+            const container = document.getElementById('techniques-container');
+            container.innerHTML = '';
+            
+            // Sample techniques - in real app, these would come from API
+            const sampleTechniques = [
+                { id: 1, name: 'Cutting to the Beat' },
+                { id: 2, name: 'Layering Sound Design' },
+                { id: 3, name: 'Alternating Dialogue' },
+                { id: 4, name: 'Color Grading' },
+                { id: 5, name: 'Audio Mixing' }
+            ];
+            
+            sampleTechniques.forEach(technique => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="technique-${technique.id}" value="${technique.id}">
+                    <label for="technique-${technique.id}">${technique.name}</label>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function populateTools() {
+            const container = document.getElementById('tools-container');
+            container.innerHTML = '';
+            
+            const sampleTools = [
+                { id: 1, name: 'Marker Tool' },
+                { id: 2, name: 'Cut Tool' },
+                { id: 3, name: 'Trim Tool' },
+                { id: 4, name: 'Audio Mixer' },
+                { id: 5, name: 'Color Corrector' }
+            ];
+            
+            sampleTools.forEach(tool => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="tool-${tool.id}" value="${tool.id}">
+                    <label for="tool-${tool.id}">${tool.name}</label>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function populateComponents() {
+            const container = document.getElementById('components-container');
+            container.innerHTML = '';
+            
+            const sampleComponents = [
+                { id: 1, name: 'Action Music Cue' },
+                { id: 2, name: 'Explosion SFX' },
+                { id: 3, name: 'Dialogue Clip' },
+                { id: 4, name: 'Background Music' },
+                { id: 5, name: 'Sound Effects' }
+            ];
+            
+            sampleComponents.forEach(component => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="component-${component.id}" value="${component.id}">
+                    <label for="component-${component.id}">${component.name}</label>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function populateReferences() {
+            const container = document.getElementById('references-container');
+            container.innerHTML = '';
+            
+            const sampleReferences = [
+                { id: 1, name: 'Marvel Trailer Reference' },
+                { id: 2, name: 'Fast & Furious Trailer' },
+                { id: 3, name: 'Horror Movie Trailer' },
+                { id: 4, name: 'Action Sequence Example' },
+                { id: 5, name: 'Music Video Reference' }
+            ];
+            
+            sampleReferences.forEach(reference => {
+                const item = document.createElement('div');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="reference-${reference.id}" value="${reference.id}">
+                    <label for="reference-${reference.id}">${reference.name}</label>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function displayHierarchy() {
+            const display = document.getElementById('hierarchy-display');
+            const content = document.getElementById('hierarchy-content');
+            
+            let html = '';
+            hierarchyData.forEach(domain => {
+                html += `<div style="margin-left: 0px;"><strong>${domain.name}</strong></div>`;
+                if (domain.sub_domains) {
+                    domain.sub_domains.forEach(subdomain => {
+                        html += `<div style="margin-left: 20px;">└─ ${subdomain.name}</div>`;
+                        if (subdomain.phases) {
+                            subdomain.phases.forEach(phase => {
+                                html += `<div style="margin-left: 40px;">└─ ${phase.name}</div>`;
+                                if (phase.concepts) {
+                                    phase.concepts.forEach(concept => {
+                                        html += `<div style="margin-left: 60px;">└─ ${concept.name}</div>`;
+                                        if (concept.themes) {
+                                            concept.themes.forEach(theme => {
+                                                html += `<div style="margin-left: 80px;">└─ ${theme.name}</div>`;
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            
+            content.innerHTML = html;
+            display.style.display = 'block';
+        }
+
+        async function createComposition() {
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response loading';
+            responseDiv.textContent = 'Creating composition...';
+
+            // Collect form data
+            const formData = {
+                name: document.getElementById('composition-name').value,
+                description: document.getElementById('composition-description').value,
+                domain_id: document.getElementById('domain-select').value,
+                sub_domain_id: document.getElementById('subdomain-select').value,
+                phase_id: document.getElementById('phase-select').value,
+                concept_id: document.getElementById('concept-select').value,
+                theme_id: document.getElementById('theme-select').value,
+                technique_ids: getSelectedIds('technique'),
+                tool_ids: getSelectedIds('tool'),
+                component_ids: getSelectedIds('component'),
+                reference_ids: getSelectedIds('reference')
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/composition-builder/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = `✅ Composition created successfully!\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    throw new Error(JSON.stringify(data, null, 2));
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = `❌ Error creating composition:\n${error.message}`;
+            }
+        }
+
+        function getSelectedIds(prefix) {
+            const checkboxes = document.querySelectorAll(`input[id^="${prefix}-"]:checked`);
+            return Array.from(checkboxes).map(cb => parseInt(cb.value));
+        }
+
+        function clearForm() {
+            document.getElementById('composition-name').value = '';
+            document.getElementById('composition-description').value = '';
+            document.getElementById('domain-select').selectedIndex = 0;
+            updateSubDomains();
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('response').style.display = 'none';
+        }
+
+        function clearAllData() {
+            hierarchyData = {};
+            document.getElementById('hierarchy-display').style.display = 'none';
+            document.getElementById('domain-select').innerHTML = '<option value="">Select Domain...</option>';
+            updateSubDomains();
+            clearForm();
+        }
+
+        // Enable create button when form has required fields
+        function checkFormValidity() {
+            const name = document.getElementById('composition-name').value.trim();
+            const domain = document.getElementById('domain-select').value;
+            const createBtn = document.getElementById('create-btn');
+            createBtn.disabled = !name || !domain;
+        }
+
+        // Add event listeners
+        document.getElementById('composition-name').addEventListener('input', checkFormValidity);
+        document.getElementById('domain-select').addEventListener('change', checkFormValidity);
+    </script>
+</body>
+</html>
