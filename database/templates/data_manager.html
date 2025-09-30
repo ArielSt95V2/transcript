@@ -954,9 +954,152 @@
             }
         }
 
-        function populateDropdowns() {
-            // This would populate the dropdowns based on the relationship map
-            // Implementation would depend on the specific dropdown being populated
+        function populateDropdowns(context = 'create') {
+            // Determine entity type and prefix based on context
+            let entityType, prefix;
+            
+            if (context === 'create') {
+                entityType = document.getElementById('entity-type').value;
+                prefix = 'entity-';
+            } else if (context === 'update') {
+                entityType = document.getElementById('update-entity-type').value;
+                prefix = 'update-';
+            }
+            
+            if (!entityType || !dashboardData.relationship_map) {
+                return;
+            }
+            
+            // Populate domain dropdown for subdomain
+            if (entityType === 'subdomain') {
+                const domainSelect = document.getElementById(`${prefix}domain`);
+                if (domainSelect) {
+                    domainSelect.innerHTML = '<option value="">Select Domain...</option>';
+                    dashboardData.relationship_map.forEach(domain => {
+                        const option = document.createElement('option');
+                        option.value = domain.id;
+                        option.textContent = domain.name;
+                        domainSelect.appendChild(option);
+                    });
+                }
+            }
+            
+            // Populate subdomain dropdown for phase
+            else if (entityType === 'phase') {
+                const subdomainSelect = document.getElementById(`${prefix}subdomain`);
+                if (subdomainSelect) {
+                    subdomainSelect.innerHTML = '<option value="">Select SubDomain...</option>';
+                    dashboardData.relationship_map.forEach(domain => {
+                        domain.subdomains.forEach(subdomain => {
+                            const option = document.createElement('option');
+                            option.value = subdomain.id;
+                            option.textContent = `${domain.name} - ${subdomain.name}`;
+                            subdomainSelect.appendChild(option);
+                        });
+                    });
+                }
+            }
+            
+            // Populate phase dropdown for concept
+            else if (entityType === 'concept') {
+                if (context === 'create') {
+                    const phaseSelect = document.getElementById(`${prefix}phase`);
+                    if (phaseSelect) {
+                        phaseSelect.innerHTML = '<option value="">Select Phase...</option>';
+                        dashboardData.relationship_map.forEach(domain => {
+                            domain.subdomains.forEach(subdomain => {
+                                subdomain.phases.forEach(phase => {
+                                    const option = document.createElement('option');
+                                    option.value = phase.id;
+                                    option.textContent = `${domain.name} - ${subdomain.name} - ${phase.name}`;
+                                    phaseSelect.appendChild(option);
+                                });
+                            });
+                        });
+                    }
+                } else if (context === 'update') {
+                    // For update context, populate all three dropdowns
+                    // Populate domain dropdown
+                    const domainSelect = document.getElementById(`${prefix}concept-domain`);
+                    if (domainSelect) {
+                        domainSelect.innerHTML = '<option value="">Select Domain...</option>';
+                        dashboardData.relationship_map.forEach(domain => {
+                            const option = document.createElement('option');
+                            option.value = domain.id;
+                            option.textContent = domain.name;
+                            domainSelect.appendChild(option);
+                        });
+                    }
+                    
+                    // Populate subdomain dropdown
+                    const subdomainSelect = document.getElementById(`${prefix}concept-subdomain`);
+                    if (subdomainSelect) {
+                        subdomainSelect.innerHTML = '<option value="">Select SubDomain...</option>';
+                        dashboardData.relationship_map.forEach(domain => {
+                            domain.subdomains.forEach(subdomain => {
+                                const option = document.createElement('option');
+                                option.value = subdomain.id;
+                                option.textContent = `${domain.name} - ${subdomain.name}`;
+                                subdomainSelect.appendChild(option);
+                            });
+                        });
+                    }
+                    
+                    // Populate phase dropdown
+                    const phaseSelect = document.getElementById(`${prefix}concept-phase`);
+                    if (phaseSelect) {
+                        phaseSelect.innerHTML = '<option value="">Select Phase...</option>';
+                        dashboardData.relationship_map.forEach(domain => {
+                            domain.subdomains.forEach(subdomain => {
+                                subdomain.phases.forEach(phase => {
+                                    const option = document.createElement('option');
+                                    option.value = phase.id;
+                                    option.textContent = `${domain.name} - ${subdomain.name} - ${phase.name}`;
+                                    phaseSelect.appendChild(option);
+                                });
+                            });
+                        });
+                    }
+                }
+            }
+            
+            // Populate concept dropdown for theme
+            else if (entityType === 'theme') {
+                const conceptSelect = document.getElementById(`${prefix}theme-concept`);
+                if (conceptSelect) {
+                    conceptSelect.innerHTML = '<option value="">Select Concept...</option>';
+                    dashboardData.relationship_map.forEach(domain => {
+                        domain.subdomains.forEach(subdomain => {
+                            subdomain.phases.forEach(phase => {
+                                phase.concepts.forEach(concept => {
+                                    const option = document.createElement('option');
+                                    option.value = concept.id;
+                                    option.textContent = `${domain.name} - ${subdomain.name} - ${phase.name} - ${concept.name}`;
+                                    conceptSelect.appendChild(option);
+                                });
+                            });
+                        });
+                    });
+                }
+            }
+            
+            // Populate phase dropdown for technique
+            else if (entityType === 'technique') {
+                const phaseSelect = document.getElementById(`${prefix}technique-phase`);
+                if (phaseSelect) {
+                    phaseSelect.innerHTML = '<option value="">Select Phase...</option>';
+                    dashboardData.relationship_map.forEach(domain => {
+                        domain.subdomains.forEach(subdomain => {
+                            subdomain.phases.forEach(phase => {
+                                const option = document.createElement('option');
+                                option.value = phase.id;
+                                option.textContent = `${domain.name} - ${subdomain.name} - ${phase.name}`;
+                                phaseSelect.appendChild(option);
+                            });
+                        });
+                    });
+                }
+            }
         }
 
         async function createEntity() {
@@ -1461,6 +1604,11 @@
             html += `<button class="btn btn-success" onclick="updateEntity()">Update ${entityType.charAt(0).toUpperCase() + entityType.slice(1)}</button>`;
             
             formFields.innerHTML = html;
+            
+            // Populate dropdowns for update form
+            if (dashboardData.relationship_map) {
+                populateDropdowns('update');
+            }
             
             // Set current values for dropdowns
             if (entityType === 'subdomain' && entity.domain_id) {
