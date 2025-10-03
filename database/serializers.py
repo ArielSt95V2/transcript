@@ -7,8 +7,8 @@ from .models import Domain, SubDomain, Phase, Concept, Theme, Reference, Compone
 # Base serializer with common fields
 class BaseModelSerializer(serializers.ModelSerializer):
     """Base serializer that all other serializers can inherit from"""
-    name = serializers.CharField(read_only=True)
-    description = serializers.CharField(read_only=True)
+    name = serializers.CharField()
+    description = serializers.CharField()
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     
@@ -46,7 +46,8 @@ class DomainCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating domains"""
     class Meta:
         model = Domain
-        fields = ['name', 'description', 'icon', 'is_active']
+        fields = ['id', 'name', 'description', 'icon', 'is_active']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         """Validate domain name length"""
@@ -89,7 +90,8 @@ class SubDomainCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating subdomains"""
     class Meta:
         model = SubDomain
-        fields = ['name', 'description', 'domain']
+        fields = ['id', 'name', 'description', 'domain']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -128,7 +130,8 @@ class PhaseCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating phases"""
     class Meta:
         model = Phase
-        fields = ['name', 'description', 'sub_domain']
+        fields = ['id', 'name', 'description', 'sub_domain']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -171,7 +174,8 @@ class ConceptCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating concepts"""
     class Meta:
         model = Concept
-        fields = ['name', 'description', 'domain', 'sub_domain', 'phase']
+        fields = ['id', 'name', 'description', 'domain', 'sub_domain', 'phase']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -195,14 +199,15 @@ class ConceptCreateUpdateSerializer(BaseModelSerializer):
 # Theme Serializers
 class ThemeListSerializer(BaseModelSerializer):
     """Lightweight serializer for list views"""
-    domain_name = serializers.CharField(source='domain.name', read_only=True)
-    sub_domain_name = serializers.CharField(source='sub_domain.name', read_only=True)
-    phase_name = serializers.CharField(source='phase.name', read_only=True)
+    concept_name = serializers.CharField(source='concept.name', read_only=True)
+    domain_name = serializers.CharField(source='concept.domain.name', read_only=True)
+    sub_domain_name = serializers.CharField(source='concept.sub_domain.name', read_only=True)
+    phase_name = serializers.CharField(source='concept.phase.name', read_only=True)
     techniques_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'description', 'domain_name', 'sub_domain_name', 'phase_name', 'techniques_count', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'concept_name', 'domain_name', 'sub_domain_name', 'phase_name', 'techniques_count', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
     
     def get_techniques_count(self, obj):
@@ -210,14 +215,15 @@ class ThemeListSerializer(BaseModelSerializer):
 
 class ThemeDetailSerializer(BaseModelSerializer):
     """Full serializer for detail views"""
-    domain = DomainListSerializer(read_only=True)
-    sub_domain = SubDomainListSerializer(read_only=True)
-    phase = PhaseListSerializer(read_only=True)
+    concept = ConceptListSerializer(read_only=True)
+    domain = DomainListSerializer(source='concept.domain', read_only=True)
+    sub_domain = SubDomainListSerializer(source='concept.sub_domain', read_only=True)
+    phase = PhaseListSerializer(source='concept.phase', read_only=True)
     techniques = serializers.SerializerMethodField()
     
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'description', 'domain', 'sub_domain', 'phase', 'techniques', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'concept', 'domain', 'sub_domain', 'phase', 'techniques', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
     
     def get_techniques(self, obj):
@@ -228,7 +234,8 @@ class ThemeCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating themes"""
     class Meta:
         model = Theme
-        fields = ['name', 'description', 'domain', 'sub_domain', 'phase']
+        fields = ['id', 'name', 'description', 'concept']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -260,7 +267,8 @@ class ReferenceCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating references"""
     class Meta:
         model = Reference
-        fields = ['name', 'description', 'reference_type', 'content_url', 'file_path', 'timestamp_start', 'timestamp_end', 'thumbnail_url', 'quality_rating', 'sub_domain']
+        fields = ['id', 'name', 'description', 'reference_type', 'content_url', 'file_path', 'timestamp_start', 'timestamp_end', 'thumbnail_url', 'quality_rating', 'sub_domain']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -305,7 +313,8 @@ class ComponentCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating components"""
     class Meta:
         model = Component
-        fields = ['name', 'description', 'component_type', 'file_format']
+        fields = ['id', 'name', 'description', 'component_type', 'file_format']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -348,7 +357,8 @@ class ToolCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating tools"""
     class Meta:
         model = Tool
-        fields = ['name', 'description', 'tool_type', 'software_platform', 'category', 'keyboard_shortcut']
+        fields = ['id', 'name', 'description', 'tool_type', 'software_platform', 'category', 'keyboard_shortcut']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -396,7 +406,8 @@ class TechniqueCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating techniques"""
     class Meta:
         model = Technique
-        fields = ['name', 'description', 'phase', 'category', 'outcome', 'instructions', 'tools_used', 'estimated_time', 'usage_frequency', 'themes', 'tools', 'components', 'references']
+        fields = ['id', 'name', 'description', 'phase', 'category', 'outcome', 'instructions', 'tools_used', 'estimated_time', 'usage_frequency', 'themes', 'tools', 'components', 'references']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:
@@ -414,36 +425,51 @@ class CompositionListSerializer(BaseModelSerializer):
     domain_name = serializers.CharField(source='domain.name', read_only=True)
     sub_domain_name = serializers.CharField(source='sub_domain.name', read_only=True)
     phase_name = serializers.CharField(source='phase.name', read_only=True)
-    technique_name = serializers.CharField(source='technique.name', read_only=True)
-    tool_name = serializers.CharField(source='tool.name', read_only=True)
-    component_name = serializers.CharField(source='component.name', read_only=True)
-    reference_name = serializers.CharField(source='reference.name', read_only=True)
+    techniques_count = serializers.SerializerMethodField()
+    tools_count = serializers.SerializerMethodField()
+    components_count = serializers.SerializerMethodField()
+    references_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Composition
-        fields = ['id', 'name', 'description', 'domain_name', 'sub_domain_name', 'phase_name', 'technique_name', 'tool_name', 'component_name', 'reference_name', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'domain_name', 'sub_domain_name', 'phase_name', 'techniques_count', 'tools_count', 'components_count', 'references_count', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_techniques_count(self, obj):
+        return obj.technique.count()
+    
+    def get_tools_count(self, obj):
+        return obj.tools.count()
+    
+    def get_components_count(self, obj):
+        return obj.components.count()
+    
+    def get_references_count(self, obj):
+        return obj.references.count()
 
 class CompositionDetailSerializer(BaseModelSerializer):
     """Full serializer for detail views"""
     domain = DomainListSerializer(read_only=True)
     sub_domain = SubDomainListSerializer(read_only=True)
     phase = PhaseListSerializer(read_only=True)
-    technique = TechniqueListSerializer(read_only=True)
-    tool = ToolListSerializer(read_only=True)
-    component = ComponentListSerializer(read_only=True)
-    reference = ReferenceListSerializer(read_only=True)
+    concept = ConceptListSerializer(read_only=True)
+    theme = ThemeListSerializer(read_only=True)
+    technique = TechniqueListSerializer(many=True, read_only=True)
+    tools = ToolListSerializer(many=True, read_only=True)
+    components = ComponentListSerializer(many=True, read_only=True)
+    references = ReferenceListSerializer(many=True, read_only=True)
     
     class Meta:
         model = Composition
-        fields = ['id', 'name', 'description', 'domain', 'sub_domain', 'phase', 'technique', 'tool', 'component', 'reference', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'domain', 'sub_domain', 'phase', 'concept', 'theme', 'technique', 'tools', 'components', 'references', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
 
 class CompositionCreateUpdateSerializer(BaseModelSerializer):
     """Serializer for creating/updating compositions"""
     class Meta:
         model = Composition
-        fields = ['name', 'description', 'domain', 'sub_domain', 'phase', 'technique', 'tool', 'component', 'reference']
+        fields = ['id', 'name', 'description', 'domain', 'sub_domain', 'phase', 'concept', 'theme', 'technique', 'tools', 'components', 'references']
+        read_only_fields = ['id']
     
     def validate_name(self, value):
         if len(value.strip()) < 2:

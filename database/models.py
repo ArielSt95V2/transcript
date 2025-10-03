@@ -22,7 +22,7 @@ class BaseModel(models.Model):
         abstract = True               
         ordering = ['-created_at']    
         verbose_name = "Base Model"   
-        verbose_name_plural = f"{verbose_name}s"
+        verbose_name_plural = "Base Models"
 
 class Domain(BaseModel):
     name = models.CharField(max_length=255, unique=True)
@@ -87,6 +87,7 @@ class Component(BaseModel):
 
     file_format = models.CharField(max_length=20, blank=True, null=True)  # e.g., "MP3", "MP4"
     component_type = models.CharField(
+        max_length=20,
         choices=[
             ('audio', 'Audio'),
             ('visual', 'Visual'),
@@ -109,6 +110,7 @@ class Tool(BaseModel):
 
     keyboard_shortcut = models.CharField(max_length=50, blank=True, null=True)  # e.g., "Ctrl + C"
     tool_type = models.CharField(
+        max_length=30,
         choices=[
             ('keyboard', 'Keyboard Shortcut'),
             ('mouse', 'Mouse Tool'),
@@ -118,6 +120,7 @@ class Tool(BaseModel):
             ('command', 'Command/Tool'),
         ])
     software_platform = models.CharField(
+        max_length=30,
         choices=[
             ('premiere', 'Adobe Premiere Pro'),
             ('davinci', 'DaVinci Resolve'),
@@ -127,6 +130,7 @@ class Tool(BaseModel):
             ('multiple', 'Multiple Platforms'),
         ])
     category = models.CharField(
+        max_length=20,
         choices=[
             ('cutting', 'Cutting'),
             ('trimming', 'Trimming'),
@@ -153,6 +157,7 @@ class Technique(BaseModel):
     references = models.ManyToManyField(Reference, related_name='techniques', blank=True) #Example: YouTube link → video clip → audio clip.
 
     category = models.CharField(
+        max_length=30,
         choices=[
             ('Storytelling', 'Rhythm & timing (how editing communicates the story)'),
             ('rhythm_timing', 'Rhythm & timing (how it flows)'),
