@@ -2,7 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     DomainViewSet, SubDomainViewSet, PhaseViewSet, ConceptViewSet, ThemeViewSet,
-    ReferenceViewSet, ComponentViewSet, ToolViewSet, TechniqueViewSet, CompositionViewSet
+    ReferenceViewSet, ComponentViewSet, ToolViewSet, TechniqueViewSet, CompositionViewSet,
+    ChatbotAssistView
 )
 
 router = DefaultRouter()
@@ -19,5 +20,5 @@ router.register(r'compositions', CompositionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-
+    path('chatbot/assist/', ChatbotAssistView.as_view(), name='chatbot-assist'),
 ]

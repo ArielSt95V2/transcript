@@ -18,6 +18,7 @@ from .serializers import (
     CompositionListSerializer, CompositionDetailSerializer, CompositionCreateUpdateSerializer
 )
 from .utils.transcript import get_youtube_transcript
+from .utils.llm_analyze import LLMAnalyzer
 import re
 
 # Base ViewSet with common logic
@@ -184,3 +185,70 @@ class CompositionViewSet(BaseNamedModelViewSet):
     list_serializer_class = CompositionListSerializer
     detail_serializer_class = CompositionDetailSerializer
     create_update_serializer_class = CompositionCreateUpdateSerializer
+
+
+class ChatbotAssistView(APIView):
+    """
+    API endpoint for chatbot assistance.
+    Helps users fill form fields using AI conversation.
+    """
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        """
+        Handle chatbot assistance requests.
+        
+        Expected payload:
+        {
+            "message": "user message",
+            "entity_type": "Component|Concept|Reference|Technique|Theme|Tool|Composition",
+            "field_name": "description|instructions|outcome|name|etc",
+            "form_data": {...},
+            "conversation_history": [{"role": "user|assistant", "content": "..."}]
+        }
+        """
+        try:
+            # Extract request data
+            user_message = request.data.get('message', '')
+            entity_type = request.data.get('entity_type', '')
+            field_name = request.data.get('field_name')
+            form_data = request.data.get('form_data', {})
+            conversation_history = request.data.get('conversation_history', [])
+            
+            # Validate required fields
+            if not user_message:
+                return Response(
+                    {'error': 'Message is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            if not entity_type:
+                return Response(
+                    {'error': 'Entity type is required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Initialize LLM analyzer
+            analyzer = LLMAnalyzer()
+            
+            # Get AI response
+            result = analyzer.chat_assist(
+                user_message=user_message,
+                entity_type=entity_type,
+                field_name=field_name,
+                form_data=form_data,
+                conversation_history=conversation_history
+            )
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except ValueError as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Internal server error: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

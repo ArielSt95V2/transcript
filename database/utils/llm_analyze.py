@@ -8,6 +8,10 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+load_dotenv()
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+
 
 class LLMAnalyzer:
     """
@@ -16,7 +20,7 @@ class LLMAnalyzer:
     """
     
     def __init__(self, 
-                 openai_api_key: Optional[str] = None,
+                 openai_api_key: Optional[str] = openai_api_key,
                  model: str = "gpt-4o-mini",
                  max_tokens: int = 1000,
                  temperature: float = 0.3):
@@ -248,6 +252,133 @@ class LLMAnalyzer:
         except Exception as e:
             logger.error(f"Failed to extract topics: {e}")
             return []
+
+
+    def chat_assist(self, 
+                   user_message: str,
+                   entity_type: str,
+                   field_name: str = None,
+                   form_data: Dict[str, Any] = None,
+                   conversation_history: List[Dict[str, str]] = None) -> Dict[str, Any]:
+        """
+        Chat-based assistance for filling entity form fields.
+        
+        Args:
+            user_message: The user's message/question
+            entity_type: Type of entity (Component, Theme, Technique, etc.)
+            field_name: The specific field being filled (optional)
+            form_data: Current form data for context (optional)
+            conversation_history: Previous messages in the conversation (optional)
+            
+        Returns:
+            Dictionary with AI response and metadata
+        """
+        if not self.client:
+            raise ValueError("OpenAI client not initialized. Please provide a valid API key.")
+        
+        if conversation_history is None:
+            conversation_history = []
+        
+        # Build context-aware system prompt
+        system_prompt = self._create_chat_system_prompt(entity_type, field_name, form_data)
+        
+        # Build message history
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Add conversation history
+        for msg in conversation_history:
+            messages.append({
+                "role": msg.get("role", "user"),
+                "content": msg.get("content", "")
+            })
+        
+        # Add current user message
+        messages.append({"role": "user", "content": user_message})
+        
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                max_tokens=self.max_tokens,
+                temperature=self.temperature
+            )
+            
+            ai_response = response.choices[0].message.content
+            
+            logger.info(f"Chat assist response generated for {entity_type}.{field_name}")
+            
+            return {
+                "response": ai_response,
+                "field_name": field_name,
+                "entity_type": entity_type,
+                "can_apply_to_field": field_name is not None,
+                "token_usage": {
+                    "prompt": response.usage.prompt_tokens,
+                    "completion": response.usage.completion_tokens,
+                    "total": response.usage.total_tokens
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to generate chat response: {e}")
+            raise
+    
+    def _create_chat_system_prompt(self, entity_type: str, field_name: str = None, form_data: Dict[str, Any] = None) -> str:
+        """Create a context-aware system prompt for chat assistance."""
+        
+        # Entity-specific context
+        entity_contexts = {
+            "Component": "video editing components (effects, transitions, presets)",
+            "Concept": "core concepts in video editing and production",
+            "Reference": "reference materials and resources",
+            "Technique": "video editing techniques and workflows",
+            "Theme": "thematic elements in video production",
+            "Tool": "software tools and applications for video editing",
+            "Composition": "complete video compositions and projects"
+        }
+        
+        entity_context = entity_contexts.get(entity_type, "entity")
+        
+        # Field-specific guidance
+        field_guidance = ""
+        if field_name:
+            field_guidance = f"\n\nThe user is currently working on the '{field_name}' field. "
+            if field_name == "description":
+                field_guidance += "Provide a clear, detailed description that explains what this is and its purpose."
+            elif field_name == "instructions":
+                field_guidance += "Provide step-by-step instructions that are clear and actionable."
+            elif field_name == "outcome":
+                field_guidance += "Describe the expected result or outcome of using this technique."
+            elif field_name == "name":
+                field_guidance += "Suggest a concise, descriptive name."
+        
+        # Form data context
+        form_context = ""
+        if form_data and len(form_data) > 0:
+            filled_fields = {k: v for k, v in form_data.items() if v and v != "" and v != 0 and v != []}
+            if filled_fields:
+                form_context = f"\n\nCurrent form data:\n"
+                for key, value in filled_fields.items():
+                    if isinstance(value, list):
+                        form_context += f"- {key}: {', '.join(map(str, value))}\n"
+                    else:
+                        form_context += f"- {key}: {value}\n"
+        
+        prompt = f"""
+                    You are an AI assistant helping users create {entity_context} in a video editing knowledge management system.
+                    Your role is to:
+                    1. Help users articulate and refine their ideas through conversation
+                    2. Generate clear, professional content for form fields
+                    3. Provide suggestions based on the entity type and context
+                    4. Be concise but informative
+                    5. Use video editing terminology appropriately
+
+                    When the user likes your response, they can send it directly to the form field.{field_guidance}{form_context}
+
+                    Provide helpful, context-aware responses that are ready to use in the form.
+                """
+                
+        return prompt
 
 
 def llm_analysis_example():
