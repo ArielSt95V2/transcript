@@ -72,6 +72,7 @@ transcript/
 │   ├── views.py          # API views
 │   └── serializers.py    # API serializers
 ├── media/                # Uploaded files
+├── BACKEND_FEATURE_WORKFLOW.md  # Backend development guide
 └── req.txt              # Dependencies
 ```
 
@@ -111,6 +112,19 @@ The Django backend provides REST API endpoints for programmatic access:
 - `GET /api/transcripts/{id}/` - Get specific transcript
 - `PUT /api/transcripts/{id}/` - Update transcript
 - `DELETE /api/transcripts/{id}/` - Delete transcript
+
+## Development Documentation
+
+For developers contributing to or extending the backend:
+
+### Backend Feature Development
+See [BACKEND_FEATURE_WORKFLOW.md](BACKEND_FEATURE_WORKFLOW.md) for:
+- Complete coding standards for models, serializers, views, and URLs
+- Step-by-step workflow for adding new features
+- Example implementations with best practices
+- Common patterns and troubleshooting
+
+This comprehensive guide covers the full lifecycle of backend feature development, from model definition through testing.
 
 ## Configuration
 

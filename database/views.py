@@ -17,7 +17,6 @@ from .serializers import (
     TechniqueListSerializer, TechniqueDetailSerializer, TechniqueCreateUpdateSerializer,
     CompositionListSerializer, CompositionDetailSerializer, CompositionCreateUpdateSerializer
 )
-from .utils.transcript import get_youtube_transcript
 from .utils.llm_analyze import LLMAnalyzer
 import re
 

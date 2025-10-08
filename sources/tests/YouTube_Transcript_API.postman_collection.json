@@ -1,0 +1,750 @@
+{
+	"info": {
+		"_postman_id": "youtube-transcript-api-collection",
+		"name": "YouTube Transcript API",
+		"description": "Complete API collection for testing YouTube Transcript endpoints in the sources app.\n\nBase URL: http://127.0.0.1:8000\nAPI Path: /api/sources/youtube-transcripts/\n\nThis collection tests all CRUD operations, filtering, and custom actions.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List All Transcripts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response is an array\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					]
+				},
+				"description": "Retrieve a list of all YouTube transcripts in the database."
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Transcript",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"",
+							"pm.test(\"Response has id field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData).to.have.property('video_id');",
+							"    pm.expect(jsonData).to.have.property('status');",
+							"    ",
+							"    // Save for subsequent requests",
+							"    pm.collectionVariables.set(\"transcript_id\", jsonData.id);",
+							"    pm.collectionVariables.set(\"video_id\", jsonData.video_id);",
+							"});",
+							"",
+							"pm.test(\"Video ID is extracted correctly\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.video_id).to.equal('dQw4w9WgXcQ');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Test Video Transcript\",\n  \"description\": \"This is a test transcript created via Postman\",\n  \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\",\n  \"language\": \"en\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					]
+				},
+				"description": "Create a new YouTube transcript. The video_id will be automatically extracted from the URL, and transcript extraction will begin automatically."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Duplicate Transcript (Should Fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Error message mentions duplicate\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var errorString = JSON.stringify(jsonData).toLowerCase();",
+							"    pm.expect(errorString).to.include('already exists');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Duplicate Test\",\n  \"description\": \"This should fail due to duplicate video_id\",\n  \"video_url\": \"https://www.youtube.com/watch?v=dQw4w9WgXcQ\",\n  \"language\": \"en\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					]
+				},
+				"description": "Attempt to create a transcript with the same video_id. Should fail with 400 error."
+			},
+			"response": []
+		},
+		{
+			"name": "Create with Invalid URL (Should Fail)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Error message mentions invalid URL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var errorString = JSON.stringify(jsonData).toLowerCase();",
+							"    pm.expect(errorString).to.include('invalid');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Invalid URL Test\",\n  \"description\": \"Testing URL validation\",\n  \"video_url\": \"https://not-youtube.com/video\",\n  \"language\": \"en\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					]
+				},
+				"description": "Attempt to create a transcript with an invalid YouTube URL. Should fail with 400 error."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transcript by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has all expected fields\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData).to.have.property('name');",
+							"    pm.expect(jsonData).to.have.property('video_id');",
+							"    pm.expect(jsonData).to.have.property('video_url');",
+							"    pm.expect(jsonData).to.have.property('status');",
+							"    pm.expect(jsonData).to.have.property('transcript_text');",
+							"    pm.expect(jsonData).to.have.property('character_count');",
+							"    pm.expect(jsonData).to.have.property('word_count');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/{{transcript_id}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						"{{transcript_id}}",
+						""
+					]
+				},
+				"description": "Retrieve full details of a specific transcript by its database ID."
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transcript by Video ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Video ID matches request\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.video_id).to.equal(pm.collectionVariables.get('video_id'));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/{{video_id}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						"{{video_id}}",
+						""
+					]
+				},
+				"description": "Retrieve a transcript using the YouTube video ID (name lookup feature)."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Status - Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All results have status 'success'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.length > 0) {",
+							"        jsonData.forEach(function(item) {",
+							"            pm.expect(item.status).to.equal('success');",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/?status=success",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "success"
+						}
+					]
+				},
+				"description": "Filter transcripts by status=success to get only successfully extracted transcripts."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Status - Failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All results have status 'failed'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.length > 0) {",
+							"        jsonData.forEach(function(item) {",
+							"            pm.expect(item.status).to.equal('failed');",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/?status=failed",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "failed"
+						}
+					]
+				},
+				"description": "Filter transcripts by status=failed to get only failed extraction attempts."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Status - Pending",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All results have status 'pending'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.length > 0) {",
+							"        jsonData.forEach(function(item) {",
+							"            pm.expect(item.status).to.equal('pending');",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/?status=pending",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending"
+						}
+					]
+				},
+				"description": "Filter transcripts by status=pending to get transcripts currently being extracted."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Language",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"All results have language 'en'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.length > 0) {",
+							"        jsonData.forEach(function(item) {",
+							"            pm.expect(item.language).to.equal('en');",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/?language=en",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					],
+					"query": [
+						{
+							"key": "language",
+							"value": "en"
+						}
+					]
+				},
+				"description": "Filter transcripts by language code (e.g., 'en' for English)."
+			},
+			"response": []
+		},
+		{
+			"name": "Filter by Video ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Results match video_id filter\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.length > 0) {",
+							"        jsonData.forEach(function(item) {",
+							"            pm.expect(item.video_id).to.equal('dQw4w9WgXcQ');",
+							"        });",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/?video_id=dQw4w9WgXcQ",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						""
+					],
+					"query": [
+						{
+							"key": "video_id",
+							"value": "dQw4w9WgXcQ"
+						}
+					]
+				},
+				"description": "Search for transcripts by specific video ID."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Transcript Metadata",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Name was updated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.equal('Updated Test Transcript');",
+							"});",
+							"",
+							"pm.test(\"Title was updated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.title).to.equal('Sample Video Title');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Updated Test Transcript\",\n  \"description\": \"Updated description via Postman\",\n  \"title\": \"Sample Video Title\",\n  \"channel_name\": \"Test Channel\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/{{transcript_id}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						"{{transcript_id}}",
+						""
+					]
+				},
+				"description": "Update transcript metadata (name, description, title, channel_name). Note: video_url and video_id cannot be updated."
+			},
+			"response": []
+		},
+		{
+			"name": "Re-extract Transcript",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has status field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('status');",
+							"    pm.expect(jsonData.status).to.be.oneOf(['pending', 'success', 'failed']);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/{{transcript_id}}/re_extract/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						"{{transcript_id}}",
+						"re_extract",
+						""
+					]
+				},
+				"description": "Re-extract transcript for a specific video. Useful for retrying failed extractions or updating existing transcripts."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Transcript",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/{{transcript_id}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						"{{transcript_id}}",
+						""
+					]
+				},
+				"description": "Delete a transcript from the database."
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Deletion (Should 404)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Transcript no longer exists\", function () {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/sources/youtube-transcripts/{{transcript_id}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sources",
+						"youtube-transcripts",
+						"{{transcript_id}}",
+						""
+					]
+				},
+				"description": "Verify that the deleted transcript no longer exists (should return 404)."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "transcript_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "video_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
