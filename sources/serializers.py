@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import YouTubeTranscript
+from .models import YouTubeTranscript, WebContentSource
 from database.serializers import BaseModelSerializer
 import re
 
@@ -141,3 +141,162 @@ class YouTubeTranscriptCreateUpdateSerializer(BaseModelSerializer):
             raise serializers.ValidationError({
                 'video_url': f'Error extracting transcript: {str(e)}'
             })
+
+
+# ============================================================
+# WEB CONTENT SOURCE SERIALIZERS
+# ============================================================
+
+class WebContentSourceListSerializer(BaseModelSerializer):
+    """Lightweight serializer for web content list views"""
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    character_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = WebContentSource
+        fields = [
+            'id', 'name', 'description', 'source_url', 'title', 
+            'author', 'language', 'status', 'status_display',
+            'character_count', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_character_count(self, obj):
+        """Return character count of markdown content"""
+        return len(obj.content_markdown) if obj.content_markdown else 0
+
+
+class WebContentSourceDetailSerializer(BaseModelSerializer):
+    """Full serializer for web content detail views"""
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    character_count = serializers.SerializerMethodField()
+    word_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = WebContentSource
+        fields = [
+            'id', 'name', 'description', 'source_url', 'title',
+            'author', 'publish_date', 'content_markdown', 'content_html',
+            'extracted_json', 'language', 'status', 'status_display',
+            'error_message', 'metadata', 'character_count', 'word_count',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_character_count(self, obj):
+        """Return character count of markdown content"""
+        return len(obj.content_markdown) if obj.content_markdown else 0
+    
+    def get_word_count(self, obj):
+        """Return word count of markdown content"""
+        if obj.content_markdown:
+            return len(obj.content_markdown.split())
+        return 0
+
+
+class WebContentSourceCreateUpdateSerializer(BaseModelSerializer):
+    """Serializer for creating/updating web content sources"""
+    extraction_prompt = serializers.CharField(
+        required=False, 
+        allow_blank=True,
+        write_only=True,
+        help_text="Optional AI prompt for structured data extraction"
+    )
+    
+    class Meta:
+        model = WebContentSource
+        fields = [
+            'id', 'name', 'description', 'source_url', 'extraction_prompt',
+            'language', 'status',
+            'content_markdown', 
+            'extracted_json'     
+        ]
+        read_only_fields = ['id', 'status']
+    
+    def validate_name(self, value):
+        """Validate name length"""
+        if len(value.strip()) < 2:
+            raise serializers.ValidationError("Name must be at least 2 characters long")
+        return value.strip()
+    
+    def validate_source_url(self, value):
+        """Validate URL format"""
+        if not value.startswith(('http://', 'https://')):
+            raise serializers.ValidationError(
+                "Invalid URL format. URL must start with http:// or https://"
+            )
+        return value
+    
+    def validate(self, data):
+        """Cross-field validation and check for duplicates"""
+        source_url = data.get('source_url')
+        
+        if source_url:
+            # Check for duplicate URL on create
+            if not self.instance:
+                if WebContentSource.objects.filter(source_url=source_url).exists():
+                    existing = WebContentSource.objects.get(source_url=source_url)
+                    raise serializers.ValidationError({
+                        'source_url': f"Content from this URL already exists (ID: {existing.id}, Name: '{existing.name}').",
+                        'existing_content_id': existing.id
+                    })
+        
+        return data
+    
+    def create(self, validated_data):
+        """Create web content source and trigger extraction"""
+        from .firecrawl_extractor import extract_web_content
+        
+        # Extract source_url and optional extraction_prompt
+        source_url = validated_data.get('source_url')
+        extraction_prompt = validated_data.pop('extraction_prompt', None)
+        
+        # Extract content BEFORE creating the record
+        try:
+            result = extract_web_content(source_url, extraction_prompt)
+            
+            if result.get('success'):
+                # Set the extracted content and success status
+                validated_data['content_markdown'] = result.get('content_markdown', '')
+                validated_data['content_html'] = result.get('content_html', '')
+                validated_data['extracted_json'] = result.get('extracted_json', {})
+                validated_data['metadata'] = result.get('metadata', {})
+                validated_data['status'] = 'success'
+                validated_data['error_message'] = None
+                
+                # Extract title and author from metadata if not already set
+                metadata = validated_data.get('metadata', {})
+                if not validated_data.get('title') and metadata.get('title'):
+                    validated_data['title'] = metadata.get('title')
+                if not validated_data.get('author') and metadata.get('author'):
+                    validated_data['author'] = metadata.get('author')
+                
+                # Create instance with the extracted content
+                instance = super().create(validated_data)
+                return instance
+            else:
+                # Extraction failed - DON'T create record, raise error
+                error_msg = result.get('error', 'Unknown error occurred')
+                raise serializers.ValidationError({
+                    'source_url': f'Failed to extract content: {error_msg}'
+                })
+                
+        except serializers.ValidationError:
+            # Re-raise validation errors
+            raise
+        except Exception as e:
+            # Unexpected exception during extraction
+            raise serializers.ValidationError({
+                'source_url': f'Error extracting content: {str(e)}'
+            })
+
+    def update(self, instance, validated_data):
+        """Update web content source - now allows editing content fields"""
+        # Remove extraction_prompt if present (not used in updates)
+        validated_data.pop('extraction_prompt', None)
+        
+        # Don't allow changing source_url
+        validated_data.pop('source_url', None)
+        
+        # Allow updating content_markdown and extracted_json
+        return super().update(instance, validated_data)

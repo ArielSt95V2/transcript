@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "web-content-firecrawl-2024",
+		"name": "Web Content Source API",
+		"description": "Complete API collection for Web Content Source endpoints using Firecrawl",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CRUD Operations",
+			"item": [
+				{
+					"name": "List All Web Content Sources",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Response time is acceptable\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""]
+						},
+						"description": "Retrieve a list of all web content sources"
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Web Content Source",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('source_url');",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"});",
+									"",
+									"pm.test(\"Save resource ID\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"resource_id\", jsonData.id);",
+									"    pm.collectionVariables.set(\"resource_name\", jsonData.name);",
+									"});",
+									"",
+									"pm.test(\"Status is success\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.status).to.equal('success');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Example Website Content\",\n    \"description\": \"Test extraction from example.com\",\n    \"source_url\": \"https://example.com\",\n    \"language\": \"en\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""]
+						},
+						"description": "Create a new web content source with Firecrawl extraction"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Web Content Source by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has full content\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('content_markdown');",
+									"    pm.expect(jsonData).to.have.property('content_html');",
+									"    pm.expect(jsonData).to.have.property('extracted_json');",
+									"    pm.expect(jsonData).to.have.property('metadata');",
+									"});",
+									"",
+									"pm.test(\"Character count is positive\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.character_count).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/{{resource_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", "{{resource_id}}", ""]
+						},
+						"description": "Retrieve full details of a specific web content source"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Web Content Source by Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Name matches\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get('resource_name'));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/{{resource_name}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", "{{resource_name}}", ""]
+						},
+						"description": "Retrieve web content source by name"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Web Content Source",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Description was updated\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.description).to.include('Updated');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Updated description for testing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/{{resource_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", "{{resource_id}}", ""]
+						},
+						"description": "Update web content source metadata"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Web Content Source",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/{{resource_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", "{{resource_id}}", ""]
+						},
+						"description": "Delete a web content source"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validation Tests",
+			"item": [
+				{
+					"name": "Create Duplicate URL (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message mentions duplicate\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var errorText = JSON.stringify(jsonData);",
+									"    pm.expect(errorText.toLowerCase()).to.include('already exists');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Duplicate Test\",\n    \"description\": \"This should fail\",\n    \"source_url\": \"https://example.com\",\n    \"language\": \"en\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""]
+						},
+						"description": "Attempt to create duplicate URL (should return 400)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create with Invalid URL (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error mentions URL validation\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var errorText = JSON.stringify(jsonData);",
+									"    pm.expect(errorText.toLowerCase()).to.satisfy(function(text) {",
+									"        return text.includes('url') || text.includes('invalid');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Invalid URL Test\",\n    \"description\": \"This should fail\",\n    \"source_url\": \"not-a-valid-url\",\n    \"language\": \"en\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""]
+						},
+						"description": "Attempt to create with invalid URL format (should return 400)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create with Missing Name (Should Fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error mentions name field\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('details');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Missing name field\",\n    \"source_url\": \"https://example.org\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""]
+						},
+						"description": "Attempt to create without name (should return 400)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Filtering",
+			"item": [
+				{
+					"name": "Filter by Status (success)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All results have status 'success'\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.length > 0) {",
+									"        jsonData.forEach(function(item) {",
+									"            pm.expect(item.status).to.equal('success');",
+									"        });",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/?status=success",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""],
+							"query": [
+								{
+									"key": "status",
+									"value": "success"
+								}
+							]
+						},
+						"description": "Filter web content sources by status"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter by Language",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All results have language 'en'\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.length > 0) {",
+									"        jsonData.forEach(function(item) {",
+									"            pm.expect(item.language).to.equal('en');",
+									"        });",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sources/web-content/?language=en",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sources", "web-content", ""],
+							"query": [
+								{
+									"key": "language",
+									"value": "en"
+								}
+							]
+						},
+						"description": "Filter web content sources by language"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "resource_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "resource_name",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
