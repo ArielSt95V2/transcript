@@ -2,7 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from .models import Domain, SubDomain, Phase, Concept, Theme, Reference, Component, Tool, Technique, Composition
 from .serializers import (
@@ -60,6 +62,95 @@ class BaseNamedModelViewSet(viewsets.ModelViewSet):
         elif self.action in ['create', 'update', 'partial_update']:
             return self.create_update_serializer_class
         return self.detail_serializer_class
+    
+    def handle_exception(self, exc):
+        """
+        Standardize error responses for frontend compatibility.
+        Returns consistent error format: {error, field_errors, error_code, meta}
+        """
+        response_data = {}
+        status_code = status.HTTP_400_BAD_REQUEST
+        
+        # 1. Handle DRF ValidationError
+        if isinstance(exc, ValidationError):
+            if isinstance(exc.detail, dict):
+                # Field-specific errors - exclude metadata fields
+                field_errors = {}
+                meta = {}
+                
+                for field, error in exc.detail.items():
+                    # Check if this is metadata (not a form field)
+                    if field in ['existing_transcript_id', 'existing_content_id']:
+                        meta[field] = error[0] if isinstance(error, list) else error
+                    else:
+                        # Regular field error
+                        if isinstance(error, list):
+                            field_errors[field] = error[0]
+                        else:
+                            field_errors[field] = str(error)
+                
+                response_data = {
+                    "error": "Validation failed. Please check the form fields.",
+                    "field_errors": field_errors,
+                    "error_code": "VALIDATION_ERROR"
+                }
+                
+                # Add metadata if present
+                if meta:
+                    response_data["meta"] = meta
+            else:
+                # General validation error
+                error_msg = exc.detail[0] if isinstance(exc.detail, list) else str(exc.detail)
+                response_data = {
+                    "error": error_msg,
+                    "error_code": "VALIDATION_ERROR"
+                }
+        
+        # 2. Handle 404 errors
+        elif isinstance(exc, (ObjectDoesNotExist, Http404)):
+            model_name = self.queryset.model.__name__ if hasattr(self, 'queryset') else "Resource"
+            response_data = {
+                "error": f"{model_name} not found",
+                "error_code": "NOT_FOUND"
+            }
+            status_code = status.HTTP_404_NOT_FOUND
+        
+        # 3. Handle permission errors
+        elif isinstance(exc, PermissionDenied):
+            response_data = {
+                "error": "You do not have permission to perform this action",
+                "error_code": "PERMISSION_DENIED"
+            }
+            status_code = status.HTTP_403_FORBIDDEN
+        
+        # 4. Handle all other errors
+        else:
+            # Let DRF handle, then reformat
+            response = super().handle_exception(exc)
+            
+            if hasattr(response, 'data'):
+                if isinstance(response.data, dict):
+                    if 'detail' in response.data:
+                        response_data = {
+                            "error": str(response.data['detail']),
+                            "error_code": "SERVER_ERROR"
+                        }
+                    else:
+                        # Unknown dict format - treat as field errors
+                        response_data = {
+                            "error": "An error occurred",
+                            "field_errors": response.data,
+                            "error_code": "UNKNOWN_ERROR"
+                        }
+                else:
+                    response_data = {
+                        "error": str(response.data),
+                        "error_code": "SERVER_ERROR"
+                    }
+            
+            return Response(response_data, status=response.status_code)
+        
+        return Response(response_data, status=status_code)
 
 
 # Now each ViewSet is just 5 lines

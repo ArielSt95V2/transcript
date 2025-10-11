@@ -5,6 +5,7 @@ logger = logging.getLogger(__name__)
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from database.views import BaseNamedModelViewSet
 from .models import YouTubeTranscript, WebContentSource
 from .serializers import (
@@ -29,40 +30,20 @@ class YouTubeTranscriptViewSet(BaseNamedModelViewSet):
     create_update_serializer_class = YouTubeTranscriptCreateUpdateSerializer
     
     def create(self, request, *args, **kwargs):
-        """Override create to provide better error handling"""
-        try:
-            serializer = self.get_serializer(data=request.data)
-            
-            # Validate the data
-            if not serializer.is_valid():
-                logger.error(f"Validation errors: {serializer.errors}")
-                return Response(
-                    {
-                        'error': 'Validation failed',
-                        'details': serializer.errors
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # Create the instance
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED,
-                headers=headers
-            )
-            
-        except Exception as e:
-            logger.error(f"Error creating YouTube transcript: {str(e)}")
-            return Response(
-                {
-                    'error': 'Failed to create transcript',
-                    'details': str(e)
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+        """Override create to check for duplicates and handle errors"""
+        video_url = request.data.get('video_url')
+        
+        # Check for duplicate video URL
+        if video_url:
+            existing = YouTubeTranscript.objects.filter(video_url=video_url).first()
+            if existing:
+                raise ValidationError({
+                    "video_url": ["A transcript for this video already exists"],
+                    "existing_transcript_id": [existing.id]
+                })
+        
+        # Proceed with standard creation
+        return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
         """Filter queryset by query parameters"""
@@ -96,41 +77,22 @@ class WebContentSourceViewSet(BaseNamedModelViewSet):
     detail_serializer_class = WebContentSourceDetailSerializer
     create_update_serializer_class = WebContentSourceCreateUpdateSerializer
     
+    # Special Error Handling for Duplicates
     def create(self, request, *args, **kwargs):
-        """Override create to provide better error handling"""
-        try:
-            serializer = self.get_serializer(data=request.data)
-            
-            # Validate the data
-            if not serializer.is_valid():
-                logger.error(f"Validation errors: {serializer.errors}")
-                return Response(
-                    {
-                        'error': 'Validation failed',
-                        'details': serializer.errors
-                    },
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            
-            # Create the instance
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED,
-                headers=headers
-            )
-            
-        except Exception as e:
-            logger.error(f"Error creating web content source: {str(e)}")
-            return Response(
-                {
-                    'error': 'Failed to create web content source',
-                    'details': str(e)
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+        """Override create to check for duplicates and handle errors"""
+        source_url = request.data.get('source_url')
+        
+        # Check for duplicate source URL
+        if source_url:
+            existing = WebContentSource.objects.filter(source_url=source_url).first()
+            if existing:
+                raise ValidationError({
+                    "source_url": ["Content from this URL already exists"],
+                    "existing_content_id": [existing.id]
+                })
+        
+        # Proceed with standard creation
+        return super().create(request, *args, **kwargs)
     
     def get_queryset(self):
         """Filter queryset by query parameters"""
